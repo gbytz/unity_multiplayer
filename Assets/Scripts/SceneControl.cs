@@ -91,11 +91,6 @@ public class SceneControl : MonoBehaviour
 		mapSession.AssetLoadedEvent += AssetLoadedCallback;
 	}
 
-	private void SaveAsset (GameObject asset)
-	{
-		currentAssets.Add (new MapAsset (asset.name, asset.transform.rotation.y, asset.transform.position));
-		mapSession.StorePlacements (currentAssets);
-	}
 
 	public void StatusChangedCallback (MapStatus mapStatus)
 	{
