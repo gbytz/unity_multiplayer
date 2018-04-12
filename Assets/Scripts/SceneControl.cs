@@ -15,24 +15,13 @@ public class SceneControl : MonoBehaviour
 
 	public Text notification;
 
-	public GameObject mapSessionPrefab;
+	public MapSession mapSession;
 	public String DEV_KEY;
-	private MapSession mapSession;
 	private List<MapAsset> currentAssets = new List<MapAsset> ();
 
 	public GameObject thisOrigin;
-	public GameObject mapInitPrefab;
-	public GameObject phoneLocationPrefab;
-
-	void Start ()
-	{
-
-	}
-
-	void Update ()
-	{
-
-	}
+	public GameObject otherOriginPrefab;
+	public HostSetup thisHostSetup;
 
 	public void StartHost ()
 	{
@@ -45,14 +34,13 @@ public class SceneControl : MonoBehaviour
 	{
 		InitClientMappingSession ();
 		enterButton.SetActive (true);
-		enterButton.SetActive (false);
+		hostClientPanel.SetActive (false);
 	}
 
 	public void SaveScene ()
 	{
 		saveButton.SetActive (false);
-		GameObject mapInit = Instantiate (mapInitPrefab);
-		SaveAsset (mapInit);
+		SaveAsset (thisOrigin);
 		Toast ("Saving Scene", 3);
 	}
 
@@ -64,8 +52,6 @@ public class SceneControl : MonoBehaviour
 
 	private void InitHostMappingSession ()
 	{
-
-		mapSession = Instantiate (mapSessionPrefab).GetComponent<MapSession>();
 
 		//Mapsession initialization
 		bool isMappingMode = true;
@@ -80,18 +66,14 @@ public class SceneControl : MonoBehaviour
 		//Set callback that confirms when assets are stored
 		mapSession.AssetStoredEvent += stored => {
 			Toast ("Scene Saved", 2.0f);
-			SwitchMappingToLocalization ();
 		};
 
 		//Set Callback for when assets are reloaded
-		mapSession.AssetLoadedEvent += mapAsset => {
-		};
+		mapSession.AssetLoadedEvent += AssetLoadedCallback;
 	}
 
 	public void InitClientMappingSession ()
 	{
-		mapSession = Instantiate (mapSessionPrefab).GetComponent<MapSession>();
-
 		//Mapsession initialization
 		bool isMappingMode = false;
 		string mapID = "Jido";
@@ -106,23 +88,13 @@ public class SceneControl : MonoBehaviour
 		mapSession.AssetStoredEvent += ClientAssetStoredCallback;
 
 		//Set Callback for when assets are reloaded
-		mapSession.AssetLoadedEvent += ClientAssetLoadedCallback;
+		mapSession.AssetLoadedEvent += AssetLoadedCallback;
 	}
 
 	private void SaveAsset (GameObject asset)
 	{
 		currentAssets.Add (new MapAsset (asset.name, asset.transform.rotation.y, asset.transform.position));
 		mapSession.StorePlacements (currentAssets);
-	}
-
-	private void SwitchMappingToLocalization ()
-	{
-		MapSession temp = mapSession;
-		mapSession = null;
-		Destroy (temp);
-
-		InitClientMappingSession ();
-		enterButton.SetActive (true);
 	}
 
 	public void StatusChangedCallback (MapStatus mapStatus)
@@ -136,18 +108,20 @@ public class SceneControl : MonoBehaviour
 		Toast ("Added Self to Scene", 2.0f);
 	}
 
-	public void ClientAssetLoadedCallback (MapAsset mapAsset)
+	public void AssetLoadedCallback (MapAsset mapAsset)
 	{
-		if (mapAsset.AssetId == "MapInit") {
-			return;
-		}
 				
 		if (IsANewAsset (mapAsset)) {
 			currentAssets.Add (mapAsset);
 
 			Vector3 position = new Vector3 (mapAsset.X, mapAsset.Y, mapAsset.Z);
 			Quaternion orientation = Quaternion.Euler(0, mapAsset.Orientation, 0);
-			GameObject instantiatedAsset = Instantiate(phoneLocationPrefab, position, orientation);
+			GameObject newPhone = Instantiate(otherOriginPrefab, -position, orientation);
+			newPhone.GetComponent<OtherPhoneSetup> ().InitPhoneAvatar(mapAsset.AssetId);
+
+			if (mapAsset.AssetId == "1") {
+				thisHostSetup.AddSelf (thisOrigin.name, position, Quaternion.Inverse(orientation));
+			}
 
 			Toast("Welcome new player to scene", 2.0f);
 		}
@@ -165,7 +139,7 @@ public class SceneControl : MonoBehaviour
 		return true;
 	}
 
-	private void Toast (String message, float time)
+	public void Toast (String message, float time)
 	{
 		notification.text = message;
 		notification.gameObject.SetActive (true);
@@ -173,7 +147,7 @@ public class SceneControl : MonoBehaviour
 		Invoke ("ToastOff", time);
 	}
 
-	private void ToastOff ()
+	public void ToastOff ()
 	{
 		notification.gameObject.SetActive (false);
 	}

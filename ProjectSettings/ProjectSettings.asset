@@ -383,7 +383,7 @@ PlayerSettings:
   logObjCUncaughtExceptions: 1
   enableCrashReportAPI: 0
   cameraUsageDescription: AR BABY
-  locationUsageDescription: 
+  locationUsageDescription: Multiplayer
   microphoneUsageDescription: 
   switchNetLibKey: 
   switchSocketMemoryPoolSize: 6144
@@ -758,12 +758,12 @@ PlayerSettings:
     Game_Performance: 0
     Hub: 0
     Purchasing: 0
-    UNet: 0
+    UNet: 1
     Unity_Ads: 0
   facebookSdkVersion: 7.9.4
   apiCompatibilityLevel: 2
   cloudProjectId: 12410dc7-cbac-4c1f-8eb9-a4d4b4a77e3f
-  projectName: 
+  projectName: Jido_Unity_Multiplayer
   organizationId: dalooshman
   cloudEnabled: 0
   enableNativePlatformBackendsForNewInputSystem: 0
