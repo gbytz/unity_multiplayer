@@ -10,9 +10,6 @@ public class SceneControl : MonoBehaviour
 {
 
 	public GameObject hostClientPanel;
-	public GameObject saveButton;
-	public GameObject enterButton;
-
 	public Text notification;
 
 	public MapSession mapSession;
@@ -21,33 +18,31 @@ public class SceneControl : MonoBehaviour
 
 	public GameObject thisOrigin;
 	public GameObject otherOriginPrefab;
-	public HostSetup thisHostSetup;
+	public HostSetup thisHostSetup;		
 
-	public void StartHost ()
+	public void JoinScene (){
+		if (thisHostSetup.isServer) {
+			StartHost ();
+		} else {
+			StartClient ();
+		}
+	}
+
+	private void StartHost ()
 	{
 		InitHostMappingSession ();
-		saveButton.SetActive (true);
 		hostClientPanel.SetActive (false);
+
+		Toast ("Scan the area for 5 seconds to build scene", 5.0f);
+		Invoke ("EnterScene", 5.0f);
 	}
 
-	public void StartClient ()
+	private void StartClient ()
 	{
 		InitClientMappingSession ();
-		enterButton.SetActive (true);
 		hostClientPanel.SetActive (false);
-	}
 
-	public void SaveScene ()
-	{
-		saveButton.SetActive (false);
-		SaveAsset (thisOrigin);
-		Toast ("Saving Scene", 3);
-	}
-
-	public void EnterScene ()
-	{
-		enterButton.SetActive (false);
-		SaveAsset (thisOrigin);
+		Toast ("Scan the area until scene is found.", 5.0f);
 	}
 
 	private void InitHostMappingSession ()
@@ -72,7 +67,7 @@ public class SceneControl : MonoBehaviour
 		mapSession.AssetLoadedEvent += AssetLoadedCallback;
 	}
 
-	public void InitClientMappingSession ()
+	private void InitClientMappingSession ()
 	{
 		//Mapsession initialization
 		bool isMappingMode = false;
@@ -91,16 +86,26 @@ public class SceneControl : MonoBehaviour
 		mapSession.AssetLoadedEvent += AssetLoadedCallback;
 	}
 
+	private void EnterScene ()
+	{
+		SaveAsset (thisOrigin);
+	}
+
+	private void SaveAsset (GameObject asset)
+	{
+		currentAssets.Add (new MapAsset (asset.name, asset.transform.rotation.y, asset.transform.position));
+		mapSession.StorePlacements (currentAssets);
+	}
+
 
 	public void StatusChangedCallback (MapStatus mapStatus)
 	{
 		Debug.Log ("status updated: " + mapStatus);
-		Toast (mapStatus.ToString (), 2.0f);
 	}
 
 	public void ClientAssetStoredCallback (bool stored)
 	{
-		Toast ("Added Self to Scene", 2.0f);
+		Toast ("Joined the Scene", 2.0f);
 	}
 
 	public void AssetLoadedCallback (MapAsset mapAsset)
@@ -116,6 +121,7 @@ public class SceneControl : MonoBehaviour
 
 			if (mapAsset.AssetId == "1") {
 				thisHostSetup.AddSelf (thisOrigin.name, position, Quaternion.Inverse(orientation));
+				EnterScene ();
 			}
 
 			Toast("Welcome new player to scene", 2.0f);

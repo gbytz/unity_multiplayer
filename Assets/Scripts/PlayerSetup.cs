@@ -3,14 +3,11 @@ using UnityEngine.Networking;
 
 public class PlayerSetup : NetworkBehaviour {
 
-//	[SyncVar(hook = "SetPlayerID")]
 	public string playerID;
-//	private bool initialized;
 
 	void Start () {
 
 		playerID = GetComponent<NetworkIdentity>().netId.ToString();
-
 		name = playerID;
 
 		if (!isLocalPlayer) {
@@ -18,6 +15,11 @@ public class PlayerSetup : NetworkBehaviour {
 		}
 
 		GameObject.Find ("This Origin").name = playerID;
+	}
+
+	public override void OnStartLocalPlayer()
+	{
+		GameObject.Find ("GUI").GetComponent<SceneControl> ().Toast ("When ready, press JOIN button", 4.0f);
 	}
 		
 		

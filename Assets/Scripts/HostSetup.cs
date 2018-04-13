@@ -23,6 +23,9 @@ public class HostSetup : NetworkBehaviour {
 
 	public override void OnStartLocalPlayer()
 	{
-		GameObject.Find ("GUI").GetComponent<SceneControl> ().thisHostSetup = this;
+		SceneControl sceneControl = GameObject.Find ("GUI").GetComponent<SceneControl> ();
+
+		sceneControl.thisHostSetup = this;
+		sceneControl.hostClientPanel.SetActive (true);
 	}
 }
