@@ -5,7 +5,7 @@ using UnityEngine;
 public class OtherPhoneSetup : MonoBehaviour {
 
 	public string playerID;
-	private Transform phoneTransform;
+	private GameObject phoneGO;
 	public GameObject phoneAvatarPrefab;
 	private GameObject phoneAvatar;
 
@@ -14,14 +14,16 @@ public class OtherPhoneSetup : MonoBehaviour {
 
 		playerID = ID;
 		phoneAvatar = Instantiate (phoneAvatarPrefab);
-		phoneTransform = GameObject.Find(playerID).transform;
+		GetComponent<AvatarControl> ().thisAvatar = phoneAvatar;
+		phoneGO = GameObject.Find(playerID);
+		phoneGO.GetComponent<PlayerControl> ().SetGameStarted (gameObject);
 
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		phoneAvatar.transform.position = transform.position + phoneTransform.position;
-		phoneAvatar.transform.rotation = transform.rotation * phoneTransform.rotation;
+		phoneAvatar.transform.position = transform.position + phoneGO.transform.position;
+		phoneAvatar.transform.rotation = transform.rotation * phoneGO.transform.rotation;
 	}
 		
 }

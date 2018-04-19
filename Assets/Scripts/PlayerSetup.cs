@@ -14,7 +14,9 @@ public class PlayerSetup : NetworkBehaviour {
 			return;
 		}
 
-		GameObject.Find ("This Origin").name = playerID;
+		GameObject thisOrigin = GameObject.Find ("This Origin");
+		thisOrigin.name = playerID;
+		GetComponent<PlayerControl> ().SetGameStarted (thisOrigin);
 	}
 
 	public override void OnStartLocalPlayer()
