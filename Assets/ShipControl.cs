@@ -6,6 +6,7 @@ public class ShipControl : MonoBehaviour {
 
 	public GameObject laserPrefab;
 	public Transform laserSpawn;
+	public RectTransform healthBar;
 
 	public void Fire(){
 		// Create the Bullet from the Bullet Prefab

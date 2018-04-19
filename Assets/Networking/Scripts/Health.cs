@@ -10,39 +10,40 @@ using UnityEngine.Networking;
 public class Health : NetworkBehaviour {
 
 	public const int maxHealth = 100;
-	[SyncVar (hook = "OnChangeHealth")]
 	public int currentHealth = maxHealth;
 	public RectTransform healthBar;
 
-	public void TakeDamage(int amount)
+	void OnStartLocalPlayer(){
+		healthBar = GameObject.Find ("My Health").GetComponent<RectTransform>();
+	}
+
+	void OnTriggerEnter(Collider collider)
 	{
-		if (!isServer)
+		if (!isLocalPlayer)
 		{
 			return;
 		}
 
-		currentHealth -= amount;
+		CmdHit ();
+
+	}
+
+	[Command]
+	void CmdHit(){
+		RpcChangeHealth ();
+	}
+
+	[ClientRpc]
+	void RpcChangeHealth ()
+	{
+		currentHealth -= 5;
 		if (currentHealth <= 0)
 		{
 			currentHealth = maxHealth;
 			Debug.Log("Dead!");
-			RpcRespawn ();
 		}
 
-	}
+		healthBar.sizeDelta = new Vector2 (currentHealth, healthBar.sizeDelta.y);
 
-	void OnChangeHealth (int currentHealth)
-	{
-		healthBar.sizeDelta = new Vector2(currentHealth, healthBar.sizeDelta.y);
-	}
-
-	[ClientRpc]
-	void RpcRespawn()
-	{
-		if (isLocalPlayer)
-		{
-			// move back to zero location
-			transform.position = Vector3.zero;
-		}
 	}
 }

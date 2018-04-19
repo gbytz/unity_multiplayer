@@ -7,6 +7,7 @@ public class AvatarControl : MonoBehaviour {
 	public GameObject thisAvatar;
 
 	public void Fire(){
+		print ("Avatar Fire");
 		thisAvatar.GetComponent<ShipControl>().Fire ();
 	}
 }

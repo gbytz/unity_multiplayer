@@ -11,6 +11,7 @@ public class SceneControl : MonoBehaviour
 
 	public GameObject hostClientPanel;
 	public Text notification;
+	public GameObject playerCanvas;
 
 	public MapSession mapSession;
 	public String DEV_KEY;
@@ -61,6 +62,7 @@ public class SceneControl : MonoBehaviour
 		//Set callback that confirms when assets are stored
 		mapSession.AssetStoredEvent += stored => {
 			Toast ("Scene Saved", 2.0f);
+			playerCanvas.SetActive (true);
 		};
 
 		//Set Callback for when assets are reloaded
@@ -105,6 +107,7 @@ public class SceneControl : MonoBehaviour
 
 	public void ClientAssetStoredCallback (bool stored)
 	{
+		playerCanvas.SetActive (true);
 		Toast ("Joined the Scene", 2.0f);
 	}
 

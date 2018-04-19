@@ -7,7 +7,7 @@ public class PlayerControl : NetworkBehaviour {
 
 	public GameObject localShip;
 
-	private GameObject thisOrigin;
+	public GameObject thisOrigin;
 	private bool gameStarted;
 
 	// Update is called once per frame
@@ -17,7 +17,7 @@ public class PlayerControl : NetworkBehaviour {
 			return;
 		}
 
-		if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
+		if ((Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began) || Input.GetKeyDown(KeyCode.Space))
 		{
 			LocalFire();
 			CmdFire();
@@ -26,6 +26,7 @@ public class PlayerControl : NetworkBehaviour {
 
 	public void SetGameStarted(GameObject origin){
 		thisOrigin = origin;
+		GetComponent<Health> ().healthBar = thisOrigin.GetComponent<AvatarControl> ().thisAvatar.GetComponent<ShipControl> ().healthBar;
 		gameStarted = true;
 	}
 
@@ -40,7 +41,9 @@ public class PlayerControl : NetworkBehaviour {
 
 	[ClientRpc]
 	void RpcRemoteFire(){
+		print ("RPC");
 		if (!gameStarted) {
+			print ("Not Started");
 			return;
 		}
 		thisOrigin.GetComponent<AvatarControl>().Fire ();
