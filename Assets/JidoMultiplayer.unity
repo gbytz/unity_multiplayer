@@ -1076,58 +1076,8 @@ Transform:
   - {fileID: 496197596}
   - {fileID: 1221232118}
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &660183187
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 4603642972502644, guid: 9c9aa7ef1f92347b8aa12723a8d045cc, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: -0.823
-      objectReference: {fileID: 0}
-    - target: {fileID: 4603642972502644, guid: 9c9aa7ef1f92347b8aa12723a8d045cc, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4603642972502644, guid: 9c9aa7ef1f92347b8aa12723a8d045cc, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4603642972502644, guid: 9c9aa7ef1f92347b8aa12723a8d045cc, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4603642972502644, guid: 9c9aa7ef1f92347b8aa12723a8d045cc, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: -0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 4603642972502644, guid: 9c9aa7ef1f92347b8aa12723a8d045cc, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4603642972502644, guid: 9c9aa7ef1f92347b8aa12723a8d045cc, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 4603642972502644, guid: 9c9aa7ef1f92347b8aa12723a8d045cc, type: 2}
-      propertyPath: m_RootOrder
-      value: 11
-      objectReference: {fileID: 0}
-    - target: {fileID: 1607645069262246, guid: 9c9aa7ef1f92347b8aa12723a8d045cc, type: 2}
-      propertyPath: m_Name
-      value: My Health
-      objectReference: {fileID: 0}
-    - target: {fileID: 1919882543772484, guid: 9c9aa7ef1f92347b8aa12723a8d045cc, type: 2}
-      propertyPath: m_Name
-      value: My Death
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: 9c9aa7ef1f92347b8aa12723a8d045cc, type: 2}
-  m_IsPrefabParent: 0
 --- !u!1 &747402895
 GameObject:
   m_ObjectHideFlags: 0
@@ -1258,7 +1208,7 @@ GameObject:
   - component: {fileID: 1052065388}
   - component: {fileID: 1052065387}
   m_Layer: 5
-  m_Name: Foreground
+  m_Name: My Health
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1883,7 +1833,7 @@ GameObject:
   - component: {fileID: 1860076112}
   - component: {fileID: 1860076111}
   m_Layer: 5
-  m_Name: Background
+  m_Name: My Death
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2055,6 +2005,7 @@ MonoBehaviour:
   hostClientPanel: {fileID: 1955722007}
   notification: {fileID: 55066103}
   playerCanvas: {fileID: 1261711942}
+  myHealth: {fileID: 1052065386}
   mapSession: {fileID: 32628533}
   DEV_KEY: AKIAJJD7BIQNQGOPCS4AJU1wpxw8ehMpbZw8rKLCJTV7j2DMT1scPr5FRjaw
   thisOrigin: {fileID: 625416867}

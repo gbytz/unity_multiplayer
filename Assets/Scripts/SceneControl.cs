@@ -12,6 +12,7 @@ public class SceneControl : MonoBehaviour
 	public GameObject hostClientPanel;
 	public Text notification;
 	public GameObject playerCanvas;
+	public RectTransform myHealth;
 
 	public MapSession mapSession;
 	public String DEV_KEY;

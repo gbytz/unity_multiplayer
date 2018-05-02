@@ -13,8 +13,13 @@ public class Health : NetworkBehaviour {
 	public int currentHealth = maxHealth;
 	public RectTransform healthBar;
 
-	void OnStartLocalPlayer(){
-		healthBar = GameObject.Find ("My Health").GetComponent<RectTransform>();
+	void Start(){
+		
+		if (!isLocalPlayer) {
+			return;
+		}
+
+		healthBar = GameObject.Find ("GUI").GetComponent<SceneControl>().myHealth;
 	}
 
 	void OnTriggerEnter(Collider collider)
@@ -36,7 +41,7 @@ public class Health : NetworkBehaviour {
 	[ClientRpc]
 	void RpcChangeHealth ()
 	{
-		currentHealth -= 5;
+		currentHealth -= 1;
 		if (currentHealth <= 0)
 		{
 			currentHealth = maxHealth;
