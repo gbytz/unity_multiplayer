@@ -56,10 +56,10 @@ GameObject:
   - component: {fileID: 114271793925652746}
   - component: {fileID: 114869474938884450}
   - component: {fileID: 114900363034707518}
-  - component: {fileID: 114146722462242030}
   - component: {fileID: 114101473877148806}
   - component: {fileID: 65455337255754876}
   - component: {fileID: 114742742008291230}
+  - component: {fileID: 114904915401712504}
   m_Layer: 0
   m_Name: Phone
   m_TagString: Untagged
@@ -174,19 +174,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   localShip: {fileID: 1472609070782388}
   thisOrigin: {fileID: 0}
---- !u!114 &114146722462242030
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1839541846569874}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a6036718ccf14f8a8ecbc0da51aab41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  otherOriginPrefab: {fileID: 1205558268257590, guid: 5bc41f6c8ff774ef6ba0e5fd4de8584e,
-    type: 2}
 --- !u!114 &114271793925652746
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -291,3 +278,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerID: 
+--- !u!114 &114904915401712504
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1839541846569874}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e1e5a9a1ebec4c239c61b3458631198, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  otherOriginPrefab: {fileID: 1205558268257590, guid: 5bc41f6c8ff774ef6ba0e5fd4de8584e,
+    type: 2}
