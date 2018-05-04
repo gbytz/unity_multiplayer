@@ -21,6 +21,18 @@ public class SceneControl : MonoBehaviour
 	public GameObject otherOriginPrefab;
 	public GameObject SUPlayerPrefab;
 
+	private float detectThresh = 0.7f;
+
+	private GameObject localPlayer;
+
+	public void AddLocalPlayer(GameObject localPlayer){
+		this.localPlayer = localPlayer;
+	}
+
+	public void AddNonLocalPlayer(GameObject playerID){
+		localPlayer.GetComponent<TransformControl> ().AddLookFor(playerID.name);
+	}
+
 	private void InitMappingSession ()
 	{
 
@@ -31,6 +43,7 @@ public class SceneControl : MonoBehaviour
 
 		mapSession.Init (isMappingMode ? MapMode.MapModeMapping : MapMode.MapModeLocalization, userID, mapID);
 
+		mapSession.ObjectDetectedEvent += ObjectDetectedCallback;
 		//Set callback to handly MapStatus updates
 		mapSession.StatusChangedEvent += StatusChangedCallback;
 
@@ -42,7 +55,13 @@ public class SceneControl : MonoBehaviour
 
 	}
 
-
+	public void ObjectDetectedCallback(DetectedObject detectedObject){
+		if (detectedObject.Name == "person" && detectedObject.Confidence > detectThresh) {
+			Vector3 pos = new Vector3 (detectedObject.CenterX, detectedObject.CenterY, detectedObject.CenterZ);
+			GameObject SUPlayer = Instantiate (SUPlayerPrefab, pos, Quaternion.identity);
+			SUPlayer.transform.localScale = new Vector3 (detectedObject.Height / 2, detectedObject.Height / 2, detectedObject.Height / 2);
+		}
+	}
 
 	public void StatusChangedCallback (MapStatus mapStatus)
 	{

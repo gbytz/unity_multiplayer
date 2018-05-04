@@ -4,23 +4,21 @@ using UnityEngine.Networking;
 public class PlayerSetup : NetworkBehaviour {
 
 	public string playerID;
+	public SceneControl sceneControl;
 
 	void Start () {
 
 		playerID = GetComponent<NetworkIdentity>().netId.ToString();
 		name = playerID;
+		sceneControl = GameObject.Find ("GUI").GetComponent<SceneControl> ();
 
 		if (!isLocalPlayer) {
-			return;
+			sceneControl.AddNonLocalPlayer (gameObject);
+		} else {
+			sceneControl.AddLocalPlayer (gameObject);
+			GameObject.Find ("This Origin").name = playerID;
 		}
 
-		GameObject.Find ("This Origin").name = playerID;
-	}
-
-	public override void OnStartLocalPlayer()
-	{
-		GameObject.Find ("GUI").GetComponent<SceneControl> ().Toast ("When ready, press JOIN button", 4.0f);
-	}
-		
+	}		
 		
 }

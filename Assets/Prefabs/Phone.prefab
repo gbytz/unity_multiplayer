@@ -278,6 +278,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerID: 
+  sceneControl: {fileID: 0}
 --- !u!114 &114904915401712504
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -291,3 +292,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   otherOriginPrefab: {fileID: 1205558268257590, guid: 5bc41f6c8ff774ef6ba0e5fd4de8584e,
     type: 2}
+  lookForText: {fileID: 0}

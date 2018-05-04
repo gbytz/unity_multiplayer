@@ -19,16 +19,21 @@ public class MapSession : MonoBehaviour {
 	public delegate void BoolDelegate(bool value);
 	public BoolDelegate AssetStoredEvent;
 
+	public delegate void DetectedObjectDelegate(DetectedObject value);
+	public DetectedObjectDelegate ObjectDetectedEvent;
+
 	public void Init(MapMode mapMode, string userId, string mapId) {
 		if (mapsyncInterface != null) {
 			Debug.Log ("Warning: Mapsync has already been initialized and cannot be initialized again.");
+			Application.Quit ();
 			return;
 		}
 
 		this.Mode = mapMode;
 
 		if (string.IsNullOrEmpty (DeveloperKey)) {
-			throw new ArgumentException ("Developer Key Required");
+			Debug.Log("Jido Maps Requires a Developer Key. Paste your developer key into the Unity Inspector Window for the MapSession GameObject");
+			Application.Quit ();
 		}
 
 		mapsyncInterface = new UnityMapsyncLibNativeInterface(mapId, userId, DeveloperKey, mapMode == MapMode.MapModeMapping);
@@ -45,6 +50,13 @@ public class MapSession : MonoBehaviour {
 		}
 	}
 
+	private void ObjectDetected(string objectJson) {
+		DetectedObjects detectedObjects = JsonUtility.FromJson<DetectedObjects> (objectJson);
+		foreach (DetectedObject obj in detectedObjects.Objects) {
+			ObjectDetectedEvent (obj);
+		}
+	}
+
 	private void StatusUpdated(string status) {
 		int asInt = int.Parse (status);
 		StatusChangedEvent ((MapStatus)asInt);
@@ -53,5 +65,4 @@ public class MapSession : MonoBehaviour {
 	private void PlacementStored(string stored) {
 		AssetStoredEvent (stored == "1");
 	}
-
 }
