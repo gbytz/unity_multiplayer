@@ -50,7 +50,7 @@ public class SceneControl : MonoBehaviour
 		if (lookFor.Count < 1) {
 			lookForText.text = "";
 		} else {
-			lookForText.text = "Tap player " + lookFor.Peek ();
+			lookForText.text = "Tap player " + lookFor.Peek () + " when they light up!";
 		}
 	}
 
@@ -84,7 +84,7 @@ public class SceneControl : MonoBehaviour
 		if (lookFor.Count > 0 && detectedObject.Name == "person" && detectedObject.Confidence > detectThresh) {
 			Vector3 pos = new Vector3 (detectedObject.X, detectedObject.Y, -detectedObject.Z);
 			GameObject SUPlayer = Instantiate (SUPlayerPrefab, pos, Quaternion.identity);
-			//SUPlayer.transform.localScale = new Vector3 (detectedObject.Height / 2, detectedObject.Height / 2, detectedObject.Height / 2);
+			SUPlayer.transform.localScale = new Vector3 (detectedObject.Height / 2, detectedObject.Height / 2, detectedObject.Height / 2);
 		}
 	}
 

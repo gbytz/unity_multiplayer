@@ -5,15 +5,11 @@ using UnityEngine.Networking;
 
 public class PlayerControl : NetworkBehaviour {
 
-	private GameObject localShip;
+	public GameObject localShip;
 
 	public GameObject thisOrigin;
 	private bool gameStarted;
 
-	void Start() {
-		localShip = GameObject.Find ("Local Ship");
-	}
-	// Update is called once per frame
 	void Update () {
 
 		if (!isLocalPlayer) {
@@ -56,11 +52,17 @@ public class PlayerControl : NetworkBehaviour {
 
 	[ClientRpc]
 	void RpcRemoteFire(){
-		print ("RPC");
+		if (isLocalPlayer) {
+			print ("Local RPC");
+			return;
+		}
+
+		print ("RPC " + GetComponent<NetworkIdentity>().netId.ToString());
 		if (!gameStarted) {
 			print ("Not Started");
 			return;
 		}
 		thisOrigin.GetComponent<AvatarControl>().Fire ();
 	}
+		
 }

@@ -70,7 +70,7 @@ public class TransformControl : NetworkBehaviour
 		return getTapRemoteFrame;
 	}
 
-	//TODO: remove
+	//TODO: For testing purposes in Unity Editor
 	public void TestTap ()
 	{
 		Tap (sceneControl.lookFor.Dequeue (), new Vector3 (0, 0, 1));
@@ -114,6 +114,7 @@ public class TransformControl : NetworkBehaviour
 		}
 	}
 
+
 	private void InitOrigin ()
 	{
 
@@ -127,7 +128,7 @@ public class TransformControl : NetworkBehaviour
 		Vector3 remoteVector = getTapRemoteFrame - tapRemoteFrame;
 
 		float angleRemoteToLocal = Vector3.SignedAngle (remoteVector, localVector, Vector3.up);
-		Vector3 offsetLocalToRemote =  getTapLocalFrame - Quaternion.AngleAxis (angleRemoteToLocal, Vector3.up) * getTapRemoteFrame;
+		Vector3 offsetLocalToRemote = getTapLocalFrame - Quaternion.AngleAxis (angleRemoteToLocal, Vector3.up) * getTapRemoteFrame;
 
 		GameObject thisOrigin = Instantiate (otherOriginPrefab, offsetLocalToRemote, Quaternion.Euler (0, angleRemoteToLocal, 0));
 		thisOrigin.GetComponent<OtherPhoneSetup> ().InitPhoneAvatar (name);
