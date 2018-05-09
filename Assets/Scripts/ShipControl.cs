@@ -18,6 +18,8 @@ public class ShipControl : MonoBehaviour {
 		// Add velocity to the bullet
 		laser.GetComponent<Rigidbody>().velocity = laser.transform.forward * 6;
 
+		print ("Fire");
+
 		// Destroy the bullet after 2 seconds
 		Destroy(laser, 2.0f);
 	}

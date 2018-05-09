@@ -6,23 +6,24 @@ using UnityEngine.UI;
 
 public class TransformControl : NetworkBehaviour
 {
+	public GameObject tapPrefab;
 
 	public GameObject otherOriginPrefab;
-	public Queue<string> lookFor;
-	private Text lookForText;
+	public SceneControl sceneControl;
 
-	private Vector3 getTapOther;
-	private Vector3 getTapThis;
-	private Vector3 tapOther;
-	private Vector3 tapThis;
+	private Vector3 getTapLocalFrame;
+	private Vector3 getTapRemoteFrame;
+	private Vector3 tapLocalFrame;
+	private Vector3 tapRemoteFrame;
 
 	private bool getTap = false;
 	private bool tap = false;
 
-	void Start (){
-		lookForText = GameObject.Find ("LookFor Text").GetComponent<Text> ();
+	void Start ()
+	{
+		sceneControl = GameObject.Find ("GUI").GetComponent<SceneControl> ();
 	}
-	
+
 	void Update ()
 	{
 
@@ -30,68 +31,84 @@ public class TransformControl : NetworkBehaviour
 			return;
 		}
 
-		if (Input.touchCount > 0 && lookFor.Count > 0) {
-			foreach (Touch t in Input.touches) {
-				if (Input.GetTouch (t.fingerId).phase == TouchPhase.Began) {
-					Ray ray = Camera.main.ScreenPointToRay (Input.GetTouch (t.fingerId).position);
-					RaycastHit hit;
-	
-					if (Physics.Raycast (ray, out hit, Mathf.Infinity) && hit.collider.name == "SU Player") {
-						Tap (lookFor.Dequeue(), hit.collider.transform.position);
-					}
+		if (Input.touchCount > 0 && sceneControl.lookFor.Count > 0) {
+			
+			if (Input.GetTouch (0).phase == TouchPhase.Began) {
+				Ray ray = Camera.main.ScreenPointToRay (Input.GetTouch (0).position);
+				RaycastHit hit;
+				bool hitSomething = Physics.Raycast (ray, out hit, Mathf.Infinity);
+				Debug.Log ("Hit " + hitSomething.ToString ());
+				if (hitSomething) {
+					Debug.Log ("Hit " + hit.collider.name);
+				}
+						
+				if (hitSomething && hit.collider.name == "SU Player(Clone)") {
+					Debug.Log ("tapped person");
+					Tap (sceneControl.lookFor.Dequeue (), hit.collider.transform.position);
+					Destroy (hit.collider.gameObject);
 				}
 			}
+		
 		}
 	}
-		
-	//Only runs on local player
-	public void AddLookFor (string playerID)
-	{
-		lookFor.Enqueue (playerID);
-		UpdateLookForDisplay ();
-	}
 
-	public Vector3 GetTap (Vector3 otherPos)
+	public Vector3 GetTap (GameObject localPlayer, Vector3 localPos)
 	{
-		Vector3 myPos = transform.position;
-		getTapOther = otherPos;
-		getTapThis = myPos;
+		Debug.Log ("GotTapped");
+		Vector3 remotePos = transform.position;
+		getTapLocalFrame = localPos;
+		getTapRemoteFrame = remotePos;
 		getTap = true;
 
 		if (tap) {
 			InitOrigin ();
+			localPlayer.GetComponent<PlayerControl> ().SetGameStarted ();
 		} else {
 			getTap = true;
 		}
 
-		return getTapThis;
+		return getTapRemoteFrame;
 	}
 
-	private void Tap (string otherID, Vector3 tapThis)
+	//TODO: remove
+	public void TestTap ()
+	{
+		Tap (sceneControl.lookFor.Dequeue (), new Vector3 (0, 0, 1));
+	}
+
+	private void Tap (string otherID, Vector3 tapLocalFrame)
 	{
 		TransformControl otherTC = GameObject.Find (otherID).GetComponent<TransformControl> ();
 
-		this.tapThis = tapThis;
-		tapOther = otherTC.GetTap (tapThis);
+		tapRemoteFrame = otherTC.GetTap (gameObject, tapLocalFrame);
 
-		RpcRemoteTap (otherID, tapThis, tapOther);
+		CmdRemoteTap (otherID, tapLocalFrame, tapRemoteFrame);
 
-		UpdateLookForDisplay ();
+		sceneControl.UpdateLookForDisplay ();
+
+	}
+
+	[Command]
+	public void CmdRemoteTap (string otherID, Vector3 tapRemote, Vector3 tapLocal)
+	{
+		RpcRemoteTap (otherID, tapRemote, tapLocal);
 	}
 
 	[ClientRpc]
-	public void RpcRemoteTap (string otherID, Vector3 tapThis, Vector3 tapOther)
+	public void RpcRemoteTap (string otherID, Vector3 tapRemote, Vector3 tapLocal)
 	{
-		TransformControl otherTC = GameObject.Find (otherID).GetComponent<TransformControl> ();
+		GameObject otherPlayer = GameObject.Find (otherID);
+		TransformControl otherTC = otherPlayer.GetComponent<TransformControl> ();
 		if (!otherTC.isLocalPlayer) {
 			return;
 		}
 
-		this.tapThis = tapThis;
-		this.tapOther = tapOther;
+		this.tapRemoteFrame = tapRemote;
+		this.tapLocalFrame = tapLocal;
 
 		if (getTap) {
 			InitOrigin ();
+			otherPlayer.GetComponent<PlayerControl> ().SetGameStarted ();
 		} else {
 			tap = true;
 		}
@@ -101,31 +118,23 @@ public class TransformControl : NetworkBehaviour
 	{
 
 		//TODO: assume same height
-		getTapOther.y = 0;
-		getTapThis.y = 0;
-		tapOther.y = 0;
-		tapThis.y = 0;
+		getTapLocalFrame.y = 0;
+		getTapRemoteFrame.y = 0;
+		tapLocalFrame.y = 0;
+		tapRemoteFrame.y = 0;
 
-		Vector3 otherVector = getTapOther - tapOther;
-		Vector3 thisVector = getTapThis - tapThis;
+		Vector3 localVector = getTapLocalFrame - tapLocalFrame;
+		Vector3 remoteVector = getTapRemoteFrame - tapRemoteFrame;
 
-		float angleOtherToThis = Vector3.SignedAngle (otherVector, thisVector, Vector3.up);
-		Vector3 offsetOtherToThis = getTapThis - Quaternion.AngleAxis (angleOtherToThis, Vector3.up) * getTapOther;
+		float angleRemoteToLocal = Vector3.SignedAngle (remoteVector, localVector, Vector3.up);
+		Vector3 offsetLocalToRemote =  getTapLocalFrame - Quaternion.AngleAxis (angleRemoteToLocal, Vector3.up) * getTapRemoteFrame;
 
-		GameObject thisOrigin = Instantiate (otherOriginPrefab, offsetOtherToThis, Quaternion.Euler (0, angleOtherToThis, 0));
+		GameObject thisOrigin = Instantiate (otherOriginPrefab, offsetLocalToRemote, Quaternion.Euler (0, angleRemoteToLocal, 0));
 		thisOrigin.GetComponent<OtherPhoneSetup> ().InitPhoneAvatar (name);
 
 		GetComponent<PlayerControl> ().SetGameStarted (thisOrigin);
 
-	}
-
-	private void UpdateLookForDisplay ()
-	{
-		if (lookFor.Count < 1) {
-			lookForText.text = "";
-		} else {
-			lookForText.text = "Tap player " + lookFor.Peek ();
-		}
+		print ("Init Origin");
 	}
 
 }

@@ -5,11 +5,14 @@ using UnityEngine.Networking;
 
 public class PlayerControl : NetworkBehaviour {
 
-	public GameObject localShip;
+	private GameObject localShip;
 
 	public GameObject thisOrigin;
 	private bool gameStarted;
 
+	void Start() {
+		localShip = GameObject.Find ("Local Ship");
+	}
 	// Update is called once per frame
 	void Update () {
 
@@ -24,14 +27,26 @@ public class PlayerControl : NetworkBehaviour {
 		}
 	}
 
+	public void SetGameStarted(){
+		if (!gameStarted) {
+			gameStarted = true;
+			GameObject.Find ("GUI").GetComponent<SceneControl>().StartGame ();
+		}
+	}
+
 	public void SetGameStarted(GameObject origin){
-		thisOrigin = origin;
-		GetComponent<Health> ().healthBar = thisOrigin.GetComponent<AvatarControl> ().thisAvatar.GetComponent<ShipControl> ().healthBar;
-		gameStarted = true;
+		if (!gameStarted) {
+			thisOrigin = origin;
+			GetComponent<Health> ().healthBar = thisOrigin.GetComponent<AvatarControl> ().thisAvatar.GetComponent<ShipControl> ().healthBar;
+			gameStarted = true;
+			GameObject.Find ("GUI").GetComponent<SceneControl>().StartGame ();
+		}
 	}
 
 	private void LocalFire(){
-		localShip.GetComponent<ShipControl> ().Fire ();
+		if (gameStarted) {
+			localShip.GetComponent<ShipControl> ().Fire ();
+		}
 	}
 
 	[Command]

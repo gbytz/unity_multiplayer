@@ -24,13 +24,38 @@ public class SceneControl : MonoBehaviour
 	private float detectThresh = 0.7f;
 
 	private GameObject localPlayer;
+	public Queue<string> lookFor = new Queue<string>();
+	public Text lookForText;
+
+	//TODO: remove
+	public void TestTap(){
+		localPlayer.GetComponent<TransformControl>().TestTap ();
+	}
+
+	void Start(){
+		Invoke ("InitMappingSession", 2.0f);
+	}
 
 	public void AddLocalPlayer(GameObject localPlayer){
 		this.localPlayer = localPlayer;
 	}
 
 	public void AddNonLocalPlayer(GameObject playerID){
-		localPlayer.GetComponent<TransformControl> ().AddLookFor(playerID.name);
+		lookFor.Enqueue (playerID.name);
+		UpdateLookForDisplay ();
+	}
+
+	public void UpdateLookForDisplay ()
+	{
+		if (lookFor.Count < 1) {
+			lookForText.text = "";
+		} else {
+			lookForText.text = "Tap player " + lookFor.Peek ();
+		}
+	}
+
+	public void StartGame(){
+		playerCanvas.SetActive (true);
 	}
 
 	private void InitMappingSession ()
@@ -56,10 +81,10 @@ public class SceneControl : MonoBehaviour
 	}
 
 	public void ObjectDetectedCallback(DetectedObject detectedObject){
-		if (detectedObject.Name == "person" && detectedObject.Confidence > detectThresh) {
-			Vector3 pos = new Vector3 (detectedObject.CenterX, detectedObject.CenterY, detectedObject.CenterZ);
+		if (lookFor.Count > 0 && detectedObject.Name == "person" && detectedObject.Confidence > detectThresh) {
+			Vector3 pos = new Vector3 (detectedObject.X, detectedObject.Y, -detectedObject.Z);
 			GameObject SUPlayer = Instantiate (SUPlayerPrefab, pos, Quaternion.identity);
-			SUPlayer.transform.localScale = new Vector3 (detectedObject.Height / 2, detectedObject.Height / 2, detectedObject.Height / 2);
+			//SUPlayer.transform.localScale = new Vector3 (detectedObject.Height / 2, detectedObject.Height / 2, detectedObject.Height / 2);
 		}
 	}
 

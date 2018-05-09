@@ -16,7 +16,6 @@ public class PlayerSetup : NetworkBehaviour {
 			sceneControl.AddNonLocalPlayer (gameObject);
 		} else {
 			sceneControl.AddLocalPlayer (gameObject);
-			GameObject.Find ("This Origin").name = playerID;
 		}
 
 	}		

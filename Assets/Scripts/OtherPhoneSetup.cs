@@ -22,7 +22,7 @@ public class OtherPhoneSetup : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		phoneAvatar.transform.position = transform.position + phoneGO.transform.position;
+		phoneAvatar.transform.position = transform.position + transform.rotation * phoneGO.transform.position;
 		phoneAvatar.transform.rotation = transform.rotation * phoneGO.transform.rotation;
 	}
 		

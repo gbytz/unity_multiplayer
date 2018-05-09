@@ -172,7 +172,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8dc09b0a9fea74886a21c79a29efc0a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  localShip: {fileID: 1472609070782388}
   thisOrigin: {fileID: 0}
 --- !u!114 &114271793925652746
 MonoBehaviour:
@@ -290,6 +289,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e1e5a9a1ebec4c239c61b3458631198, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tapPrefab: {fileID: 1990980577190082, guid: 61fb2a727f9e34c8788103d6dfe5b9ca, type: 2}
   otherOriginPrefab: {fileID: 1205558268257590, guid: 5bc41f6c8ff774ef6ba0e5fd4de8584e,
     type: 2}
-  lookForText: {fileID: 0}
+  sceneControl: {fileID: 0}
