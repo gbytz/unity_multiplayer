@@ -7,6 +7,9 @@ using UnityEngine.UI;
 public class TransformControl : NetworkBehaviour
 {
 	public GameObject tapPrefab;
+	public GameObject thisOrigin;
+	public float angleRemoteToLocal;
+	public Vector3 offsetLocalToRemote;
 
 	public GameObject otherOriginPrefab;
 	public SceneControl sceneControl;
@@ -130,12 +133,16 @@ public class TransformControl : NetworkBehaviour
 		float angleRemoteToLocal = Vector3.SignedAngle (remoteVector, localVector, Vector3.up);
 		Vector3 offsetLocalToRemote = getTapLocalFrame - Quaternion.AngleAxis (angleRemoteToLocal, Vector3.up) * getTapRemoteFrame;
 
-		GameObject thisOrigin = Instantiate (otherOriginPrefab, offsetLocalToRemote, Quaternion.Euler (0, angleRemoteToLocal, 0));
+		thisOrigin = Instantiate (otherOriginPrefab, offsetLocalToRemote, Quaternion.Euler (0, angleRemoteToLocal, 0));
 		thisOrigin.GetComponent<OtherPhoneSetup> ().InitPhoneAvatar (name);
 
 		GetComponent<PlayerControl> ().SetGameStarted (thisOrigin);
 
 		print ("Init Origin");
+	}
+
+	public Vector3 GetLocalPosition(Vector3 remotePosition){
+		return offsetLocalToRemote + Quaternion.AngleAxis (angleRemoteToLocal, Vector3.up) * remotePosition;
 	}
 
 }

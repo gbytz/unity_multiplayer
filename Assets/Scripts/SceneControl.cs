@@ -20,6 +20,7 @@ public class SceneControl : MonoBehaviour
 	public GameObject thisOrigin;
 	public GameObject otherOriginPrefab;
 	public GameObject SUPlayerPrefab;
+	public GameObject detectedObjectPrefab;
 
 	private float detectThresh = 0.7f;
 
@@ -81,10 +82,17 @@ public class SceneControl : MonoBehaviour
 	}
 
 	public void ObjectDetectedCallback(DetectedObject detectedObject){
-		if (lookFor.Count > 0 && detectedObject.Name == "person" && detectedObject.Confidence > detectThresh) {
-			Vector3 pos = new Vector3 (detectedObject.X, detectedObject.Y, -detectedObject.Z);
-			GameObject SUPlayer = Instantiate (SUPlayerPrefab, pos, Quaternion.identity);
-			SUPlayer.transform.localScale = new Vector3 (detectedObject.Height / 2, detectedObject.Height / 2, detectedObject.Height / 2);
+		if (detectedObject.Confidence > detectThresh) {
+
+			if (detectedObject.Name == "person") {
+				Vector3 pos = new Vector3 (detectedObject.X, detectedObject.Y, -detectedObject.Z);
+				GameObject SUPlayer = Instantiate (SUPlayerPrefab, pos, Quaternion.identity);
+				SUPlayer.transform.localScale = new Vector3 (detectedObject.Height / 2, detectedObject.Height / 2, detectedObject.Height / 2);
+			} else if (detectedObject.Name == "chair"){
+				Vector3 pos = new Vector3 (detectedObject.X, detectedObject.Y, -detectedObject.Z);
+				GameObject DO = Instantiate (detectedObjectPrefab, pos, Quaternion.identity);
+				DO.transform.localScale = new Vector3 (detectedObject.Height / 2, detectedObject.Height / 2, detectedObject.Height / 2);
+			}
 		}
 	}
 

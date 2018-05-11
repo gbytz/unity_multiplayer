@@ -60,6 +60,7 @@ GameObject:
   - component: {fileID: 65455337255754876}
   - component: {fileID: 114742742008291230}
   - component: {fileID: 114904915401712504}
+  - component: {fileID: 114407766834056950}
   m_Layer: 0
   m_Name: Phone
   m_TagString: Untagged
@@ -172,7 +173,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8dc09b0a9fea74886a21c79a29efc0a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  localShip: {fileID: 1472609070782388}
   thisOrigin: {fileID: 0}
+  gameStarted: 0
 --- !u!114 &114271793925652746
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -184,6 +187,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aec25c56cac8f466aa038af5ca04b246, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114407766834056950
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1839541846569874}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1fbd89654705400b8117f767abde279, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  defensePrefab: {fileID: 1232578769277254, guid: 33356cabc5a324988bfb67abb11abeb5,
+    type: 2}
 --- !u!114 &114431612792410720
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -290,6 +306,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tapPrefab: {fileID: 1990980577190082, guid: 61fb2a727f9e34c8788103d6dfe5b9ca, type: 2}
+  thisOrigin: {fileID: 0}
+  angleRemoteToLocal: 0
+  offsetLocalToRemote: {x: 0, y: 0, z: 0}
   otherOriginPrefab: {fileID: 1205558268257590, guid: 5bc41f6c8ff774ef6ba0e5fd4de8584e,
     type: 2}
   sceneControl: {fileID: 0}

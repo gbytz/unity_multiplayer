@@ -8,7 +8,7 @@ public class PlayerControl : NetworkBehaviour {
 	public GameObject localShip;
 
 	public GameObject thisOrigin;
-	private bool gameStarted;
+	public bool gameStarted;
 
 	void Update () {
 
