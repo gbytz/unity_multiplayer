@@ -10,17 +10,29 @@ public class PlayerControl : NetworkBehaviour {
 	public GameObject thisOrigin;
 	public bool gameStarted;
 
+	private float maxCount = 80f;
+	private int count = 1;
+
 	void Update () {
 
 		if (!isLocalPlayer) {
 			return;
 		}
 
-		if ((Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began) || Input.GetKeyDown(KeyCode.Space))
+		if (Input.touchCount > 0)  
 		{
-			LocalFire();
-			CmdFire();
-		}
+			if ((Input.GetTouch (0).phase == TouchPhase.Stationary) || (Input.GetTouch (0).phase == TouchPhase.Moved)) {
+				if (count < maxCount) {
+					count++;
+				}
+			} else if (Input.GetTouch (0).phase == TouchPhase.Ended) {
+				float speedFraction = (float)count / maxCount;
+				LocalFire (speedFraction);
+				CmdFire (speedFraction);
+				count = 1;
+			}
+		} 
+	
 	}
 
 	public void SetGameStarted(){
@@ -39,30 +51,29 @@ public class PlayerControl : NetworkBehaviour {
 		}
 	}
 
-	private void LocalFire(){
+	private void LocalFire(float speedFraction){
 		if (gameStarted) {
-			localShip.GetComponent<ShipControl> ().Fire ();
+			localShip.GetComponent<ShipControl> ().Fire (speedFraction);
 		}
 	}
 
 	[Command]
-	void CmdFire(){
-		RpcRemoteFire ();
+	void CmdFire(float speedFraction){
+		RpcRemoteFire (speedFraction);
 	}
 
 	[ClientRpc]
-	void RpcRemoteFire(){
+	void RpcRemoteFire(float speedFraction){
 		if (isLocalPlayer) {
 			print ("Local RPC");
 			return;
 		}
 
-		print ("RPC " + GetComponent<NetworkIdentity>().netId.ToString());
 		if (!gameStarted) {
 			print ("Not Started");
 			return;
 		}
-		thisOrigin.GetComponent<AvatarControl>().Fire ();
+		thisOrigin.GetComponent<AvatarControl>().Fire (speedFraction);
 	}
 		
 }

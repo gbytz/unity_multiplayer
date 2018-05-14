@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class SelfDestroy : MonoBehaviour {
 
+	public float destroyTime = 0.5f;
+
 	// Use this for initialization
 	void Start () {
-		Invoke ("SelfDestruct", 0.5f);
+		Invoke ("SelfDestruct", destroyTime);
 	}
 	
 	// Update is called once per frame

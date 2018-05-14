@@ -8,7 +8,9 @@ public class ShipControl : MonoBehaviour {
 	public Transform laserSpawn;
 	public RectTransform healthBar;
 
-	public void Fire(){
+	private float maxSpeed = 6;
+
+	public void Fire(float speedFraction){
 		// Create the Bullet from the Bullet Prefab
 		var laser = (GameObject)Instantiate (
 			laserPrefab,
@@ -16,11 +18,11 @@ public class ShipControl : MonoBehaviour {
 			laserSpawn.rotation);
 
 		// Add velocity to the bullet
-		laser.GetComponent<Rigidbody>().velocity = laser.transform.forward * 6;
+		laser.GetComponent<Rigidbody>().velocity = laser.transform.forward * maxSpeed * speedFraction;
 
 		print ("Fire");
 
 		// Destroy the bullet after 2 seconds
-		Destroy(laser, 2.0f);
+		Destroy(laser, 4.0f);
 	}
 }

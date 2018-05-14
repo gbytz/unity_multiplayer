@@ -28,8 +28,7 @@ public class DefenseControl : NetworkBehaviour {
 				RaycastHit hit;
 				bool hitSomething = Physics.Raycast (ray, out hit, Mathf.Infinity);
 
-				if (hitSomething) {
-					Debug.Log ("tapped person");
+				if (hitSomething && hit.collider.name == "Detected Object(Clone)") {
 					Vector3 pos = hit.collider.transform.position;
 					Instantiate (defensePrefab, pos, Quaternion.identity);
 					CmdPlaceDetectedObject (pos);

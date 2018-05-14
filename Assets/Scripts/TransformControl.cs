@@ -58,7 +58,7 @@ public class TransformControl : NetworkBehaviour
 	public Vector3 GetTap (GameObject localPlayer, Vector3 localPos)
 	{
 		Debug.Log ("GotTapped");
-		Vector3 remotePos = transform.position;
+		Vector3 remotePos = ConvertPhoneToHumanCentroid(transform.position);
 		getTapLocalFrame = localPos;
 		getTapRemoteFrame = remotePos;
 		getTap = true;
@@ -121,17 +121,11 @@ public class TransformControl : NetworkBehaviour
 	private void InitOrigin ()
 	{
 
-		//TODO: assume same height
-		getTapLocalFrame.y = 0;
-		getTapRemoteFrame.y = 0;
-		tapLocalFrame.y = 0;
-		tapRemoteFrame.y = 0;
-
 		Vector3 localVector = getTapLocalFrame - tapLocalFrame;
 		Vector3 remoteVector = getTapRemoteFrame - tapRemoteFrame;
 
-		float angleRemoteToLocal = Vector3.SignedAngle (remoteVector, localVector, Vector3.up);
-		Vector3 offsetLocalToRemote = getTapLocalFrame - Quaternion.AngleAxis (angleRemoteToLocal, Vector3.up) * getTapRemoteFrame;
+		angleRemoteToLocal = Vector3.SignedAngle (remoteVector, localVector, Vector3.up);
+		offsetLocalToRemote = getTapLocalFrame - Quaternion.AngleAxis (angleRemoteToLocal, Vector3.up) * getTapRemoteFrame;
 
 		thisOrigin = Instantiate (otherOriginPrefab, offsetLocalToRemote, Quaternion.Euler (0, angleRemoteToLocal, 0));
 		thisOrigin.GetComponent<OtherPhoneSetup> ().InitPhoneAvatar (name);
@@ -144,5 +138,13 @@ public class TransformControl : NetworkBehaviour
 	public Vector3 GetLocalPosition(Vector3 remotePosition){
 		return offsetLocalToRemote + Quaternion.AngleAxis (angleRemoteToLocal, Vector3.up) * remotePosition;
 	}
+
+	private Vector3 ConvertPhoneToHumanCentroid(Vector3 phonePos){
+		Vector3 offsetZ = transform.TransformPoint(new Vector3 (0f, 0f, -.2f));
+		Vector3 offsetY = new Vector3 (0f, -0.2f, 0f);
+
+		return offsetZ + offsetY;
+	}
+
 
 }
