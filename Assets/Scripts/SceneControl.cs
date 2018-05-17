@@ -84,11 +84,11 @@ public class SceneControl : MonoBehaviour
 	public void ObjectDetectedCallback(DetectedObject detectedObject){
 		if (detectedObject.Confidence > detectThresh) {
 
-			if (detectedObject.Name == "person") {
+			if (lookFor.Count > 0 && detectedObject.Name == "person") {
 				Vector3 pos = new Vector3 (detectedObject.X, detectedObject.Y, -detectedObject.Z);
 				GameObject SUPlayer = Instantiate (SUPlayerPrefab, pos, Quaternion.identity);
 				SUPlayer.transform.localScale = new Vector3 (detectedObject.Height / 2, detectedObject.Height / 2, detectedObject.Height / 2);
-			} else if (detectedObject.Name == "chair"){
+			} else if (lookFor.Count < 1 && detectedObject.Name == "chair"){
 				Vector3 pos = new Vector3 (detectedObject.X, detectedObject.Y, -detectedObject.Z);
 				GameObject DO = Instantiate (detectedObjectPrefab, pos, Quaternion.identity);
 				DO.transform.localScale = new Vector3 (detectedObject.Height / 2, detectedObject.Height / 2, detectedObject.Height / 2);
