@@ -1,15 +1,17 @@
-﻿using System.Collections;
+﻿//Sets up and controls the remote player's local version. Sits on the remote player's local origin.
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(AvatarControl))]
 public class OtherPhoneSetup : MonoBehaviour {
 
 	public string playerID;
-	private GameObject phoneGO;
-	public GameObject phoneAvatarPrefab;
-	private GameObject phoneAvatar;
+	private GameObject phoneGO; //Networked remote player's GO
+	public GameObject phoneAvatarPrefab; //This players avatar prefab
+	private GameObject phoneAvatar; //This avatar instance
 
-	// Use this for initialization
+	//Called by TransformControl
 	public void InitPhoneAvatar (string ID) {
 
 		playerID = ID;
@@ -20,7 +22,7 @@ public class OtherPhoneSetup : MonoBehaviour {
 
 	}
 	
-	// Update is called once per frame
+	// Sets the remote player's local avatar's position and rotation using the local origin
 	void Update () {
 		phoneAvatar.transform.position = transform.position + transform.rotation * phoneGO.transform.position;
 		phoneAvatar.transform.rotation = transform.rotation * phoneGO.transform.rotation;

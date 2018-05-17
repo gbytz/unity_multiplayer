@@ -1,17 +1,22 @@
-﻿using UnityEngine;
+﻿//Sets up players when they enter the scene
+using UnityEngine;
 using UnityEngine.Networking;
 
+[RequireComponent(typeof(NetworkIdentity))]
 public class PlayerSetup : NetworkBehaviour {
 
 	public string playerID;
 	public SceneControl sceneControl;
 
+
 	void Start () {
 
+		//Set the name of this player game object using netId
 		playerID = GetComponent<NetworkIdentity>().netId.ToString();
 		name = playerID;
-		sceneControl = GameObject.Find ("GUI").GetComponent<SceneControl> ();
 
+		//Add this player game object to the list of players in SceneControl
+		sceneControl = GameObject.Find ("GUI").GetComponent<SceneControl> ();
 		if (!isLocalPlayer) {
 			sceneControl.AddNonLocalPlayer (gameObject);
 		} else {
