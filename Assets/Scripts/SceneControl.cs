@@ -28,13 +28,55 @@ public class SceneControl : MonoBehaviour
 	public Queue<string> lookFor = new Queue<string>();
 	public Text lookForText;
 
-	//TODO: remove
+	//TODO: Just for testing in editor. Simulates tapping a detected person object
 	public void TestTap(){
 		localPlayer.GetComponent<TransformControl>().TestTap ();
 	}
 
 	void Start(){
+		//Wait 2 seconds for ARKit to start before starting Jido mapSession
+		//TODO: better way to ensure Jido mapSession starts after ARKit kicks off
 		Invoke ("InitMappingSession", 2.0f);
+	}
+
+	private void InitMappingSession ()
+	{
+
+		//Mapsession initialization parameters
+		bool isMappingMode = true;
+		string mapID = "Jido";
+		string userID = "Multiplayer";
+
+		//Initialize mapSession
+		mapSession.Init (isMappingMode ? MapMode.MapModeMapping : MapMode.MapModeLocalization, userID, mapID);
+
+		//Set callback to handle when objects are detected
+		mapSession.ObjectDetectedEvent += ObjectDetectedCallback;
+
+		//Set callback to handle MapStatus updates
+		mapSession.StatusChangedEvent += mapStatus => {};
+
+		//Set callback that confirms when assets are stored
+		mapSession.AssetStoredEvent += stored => {};
+
+		//Set Callback for when assets are reloaded
+		mapSession.AssetLoadedEvent += mapAsset => {};
+
+	}
+
+	public void ObjectDetectedCallback(DetectedObject detectedObject){
+		if (detectedObject.Confidence > detectThresh) {
+
+			if (lookFor.Count > 0 && detectedObject.Name == "person") {
+				Vector3 pos = new Vector3 (detectedObject.X, detectedObject.Y, -detectedObject.Z);
+				GameObject SUPlayer = Instantiate (SUPlayerPrefab, pos, Quaternion.identity);
+				SUPlayer.transform.localScale = new Vector3 (detectedObject.Height / 3, detectedObject.Height, detectedObject.Height / 3);
+			} else if (lookFor.Count < 1 && detectedObject.Name == "chair"){
+				Vector3 pos = new Vector3 (detectedObject.X, detectedObject.Y, -detectedObject.Z);
+				GameObject DO = Instantiate (detectedObjectPrefab, pos, Quaternion.identity);
+				DO.transform.localScale = new Vector3 (detectedObject.Height / 2, detectedObject.Height, detectedObject.Height / 2);
+			}
+		}
 	}
 
 	public void AddLocalPlayer(GameObject localPlayer){
@@ -58,53 +100,6 @@ public class SceneControl : MonoBehaviour
 	public void StartGame(){
 		playerCanvas.SetActive (true);
 	}
-
-	private void InitMappingSession ()
-	{
-
-		//Mapsession initialization
-		bool isMappingMode = true;
-		string mapID = "Jido";
-		string userID = "Multiplayer";
-
-		mapSession.Init (isMappingMode ? MapMode.MapModeMapping : MapMode.MapModeLocalization, userID, mapID);
-
-		mapSession.ObjectDetectedEvent += ObjectDetectedCallback;
-
-		//Set callback to handly MapStatus updates
-		mapSession.StatusChangedEvent += StatusChangedCallback;
-
-		//Set callback that confirms when assets are stored
-		mapSession.AssetStoredEvent += AssetStoredCallback;
-
-		//Set Callback for when assets are reloaded
-		mapSession.AssetLoadedEvent += AssetLoadedCallback;
-
-	}
-
-	public void ObjectDetectedCallback(DetectedObject detectedObject){
-		if (detectedObject.Confidence > detectThresh) {
-
-			if (lookFor.Count > 0 && detectedObject.Name == "person") {
-				Vector3 pos = new Vector3 (detectedObject.X, detectedObject.Y, -detectedObject.Z);
-				GameObject SUPlayer = Instantiate (SUPlayerPrefab, pos, Quaternion.identity);
-				SUPlayer.transform.localScale = new Vector3 (detectedObject.Height / 2, detectedObject.Height, detectedObject.Height / 2);
-			} else if (lookFor.Count < 1 && detectedObject.Name == "chair"){
-				Vector3 pos = new Vector3 (detectedObject.X, detectedObject.Y, -detectedObject.Z);
-				GameObject DO = Instantiate (detectedObjectPrefab, pos, Quaternion.identity);
-				DO.transform.localScale = new Vector3 (detectedObject.Height / 2, detectedObject.Height, detectedObject.Height / 2);
-			}
-		}
-	}
-
-	public void StatusChangedCallback (MapStatus mapStatus)
-	{
-		Debug.Log ("status updated: " + mapStatus);
-	}
-
-	public void AssetStoredCallback (bool stored){}
-
-	public void AssetLoadedCallback (MapAsset mapAsset){}
 
 	public void Toast (String message, float time)
 	{

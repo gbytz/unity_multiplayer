@@ -35,7 +35,7 @@ public class TransformControl : NetworkBehaviour
 		}
 
 		if (Input.touchCount > 0 && sceneControl.lookFor.Count > 0) {
-			
+
 			if (Input.GetTouch (0).phase == TouchPhase.Began) {
 				Ray ray = Camera.main.ScreenPointToRay (Input.GetTouch (0).position);
 				RaycastHit hit;
@@ -44,14 +44,14 @@ public class TransformControl : NetworkBehaviour
 				if (hitSomething) {
 					Debug.Log ("Hit " + hit.collider.name);
 				}
-						
+
 				if (hitSomething && hit.collider.name == "SU Player(Clone)") {
 					Debug.Log ("tapped person");
 					Tap (sceneControl.lookFor.Dequeue (), hit.collider.transform.position);
 					Destroy (hit.collider.gameObject);
 				}
 			}
-		
+
 		}
 	}
 
@@ -114,7 +114,7 @@ public class TransformControl : NetworkBehaviour
 			otherPlayer.GetComponent<PlayerControl> ().SetGameStarted ();
 		} else {
 			tap = true;
-		}
+		} 
 	}
 
 
@@ -125,7 +125,9 @@ public class TransformControl : NetworkBehaviour
 		Vector3 remoteVector = getTapRemoteFrame - tapRemoteFrame;
 
 		angleRemoteToLocal = Vector3.SignedAngle (remoteVector, localVector, Vector3.up);
-		offsetLocalToRemote = getTapLocalFrame - Quaternion.AngleAxis (angleRemoteToLocal, Vector3.up) * getTapRemoteFrame;
+		Vector3 offsetLocalToRemoteA = getTapLocalFrame - Quaternion.AngleAxis (angleRemoteToLocal, Vector3.up) * getTapRemoteFrame;
+		Vector3 offsetLocalToRemoteB = tapLocalFrame - Quaternion.AngleAxis (angleRemoteToLocal, Vector3.up) * tapRemoteFrame;
+		offsetLocalToRemote = (offsetLocalToRemoteA + offsetLocalToRemoteB) / 2;
 
 		thisOrigin = Instantiate (otherOriginPrefab, offsetLocalToRemote, Quaternion.Euler (0, angleRemoteToLocal, 0));
 		thisOrigin.GetComponent<OtherPhoneSetup> ().InitPhoneAvatar (name);
@@ -140,8 +142,8 @@ public class TransformControl : NetworkBehaviour
 	}
 
 	private Vector3 ConvertPhoneToHumanCentroid(Vector3 phonePos){
-		Vector3 offsetZ = transform.TransformPoint(new Vector3 (0f, 0f, -.2f));
-		Vector3 offsetY = new Vector3 (0f, -0.2f, 0f);
+		Vector3 offsetZ = transform.TransformPoint(new Vector3 (0f, 0f, -.3f));
+		Vector3 offsetY = new Vector3 (0f, -.5f, 0f);
 
 		return offsetZ + offsetY;
 	}
