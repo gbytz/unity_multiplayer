@@ -42,6 +42,7 @@ GameObject:
   - component: {fileID: 23105096307088338}
   - component: {fileID: 114142379989816300}
   - component: {fileID: 114874049558245356}
+  - component: {fileID: 114820881745782884}
   m_Layer: 0
   m_Name: Other Origin
   m_TagString: Untagged
@@ -366,6 +367,17 @@ MonoBehaviour:
   playerID: 
   phoneAvatarPrefab: {fileID: 1024681419524828, guid: 9c9aa7ef1f92347b8aa12723a8d045cc,
     type: 2}
+--- !u!114 &114820881745782884
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1205558268257590}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69af55b27029d4754be89c1f95ac6fec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114874049558245356
 MonoBehaviour:
   m_ObjectHideFlags: 1

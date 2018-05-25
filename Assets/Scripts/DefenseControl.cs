@@ -14,7 +14,7 @@ public class DefenseControl : NetworkBehaviour {
 		playerControl = GetComponent<PlayerControl> ();
 		transformControl = GetComponent<TransformControl> ();
 	}
-	
+
 	void Update ()
 	{
 		if (!isLocalPlayer) {

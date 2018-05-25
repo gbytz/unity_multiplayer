@@ -21,6 +21,8 @@ public class TransformControl : NetworkBehaviour
 
 	private bool getTap = false;
 	private bool tap = false;
+	private bool initialized = false;
+	private float updateThresh = 1.0f;
 
 	void Start ()
 	{
@@ -55,10 +57,25 @@ public class TransformControl : NetworkBehaviour
 		}
 	}
 
-	public Vector3 GetTap (GameObject localPlayer, Vector3 localPos)
+	public bool GetTap (GameObject localPlayer, Vector3 localPos, out Vector3 getTapRemoteReturn)
 	{
 		Debug.Log ("GotTapped");
 		Vector3 remotePos = ConvertPhoneToHumanCentroid(transform.position);
+
+		if (initialized) {
+			Vector3 remoteDiff = remotePos - getTapRemoteFrame;
+			Vector3 localDiff = localPos - getTapLocalFrame;
+
+			if (Vector3.Distance (remoteDiff, localDiff) > updateThresh) {
+				print ("Too Far: " + Vector3.Distance (remoteDiff, localDiff));
+				getTapRemoteReturn = Vector3.zero;
+				return false;
+			}
+
+			print ("Close enough: " + Vector3.Distance (remoteDiff, localDiff));
+
+		}
+
 		getTapLocalFrame = localPos;
 		getTapRemoteFrame = remotePos;
 		getTap = true;
@@ -66,11 +83,10 @@ public class TransformControl : NetworkBehaviour
 		if (tap) {
 			InitOrigin ();
 			localPlayer.GetComponent<PlayerControl> ().SetGameStarted ();
-		} else {
-			getTap = true;
 		}
 
-		return getTapRemoteFrame;
+		getTapRemoteReturn = getTapRemoteFrame;
+		return true;
 	}
 
 	//TODO: For testing purposes in Unity Editor
@@ -83,13 +99,23 @@ public class TransformControl : NetworkBehaviour
 	{
 		TransformControl otherTC = GameObject.Find (otherID).GetComponent<TransformControl> ();
 
-		tapRemoteFrame = otherTC.GetTap (gameObject, tapLocalFrame);
+		otherTC.GetTap (gameObject, tapLocalFrame, out tapRemoteFrame);
 
 		CmdRemoteTap (otherID, tapLocalFrame, tapRemoteFrame);
 
 		sceneControl.UpdateLookForDisplay ();
 
 	}
+
+	public void AutoTap (string otherID, Vector3 tapLocalFrame)
+	{
+		TransformControl otherTC = GameObject.Find (otherID).GetComponent<TransformControl> ();
+
+		if (otherTC.GetTap (gameObject, tapLocalFrame, out tapRemoteFrame)) {
+			CmdRemoteTap (otherID, tapLocalFrame, tapRemoteFrame);
+		}
+	}
+
 
 	[Command]
 	public void CmdRemoteTap (string otherID, Vector3 tapRemote, Vector3 tapLocal)
@@ -108,6 +134,7 @@ public class TransformControl : NetworkBehaviour
 
 		this.tapRemoteFrame = tapRemote;
 		this.tapLocalFrame = tapLocal;
+		tap = true;
 
 		if (getTap) {
 			InitOrigin ();
@@ -129,12 +156,19 @@ public class TransformControl : NetworkBehaviour
 		Vector3 offsetLocalToRemoteB = tapLocalFrame - Quaternion.AngleAxis (angleRemoteToLocal, Vector3.up) * tapRemoteFrame;
 		offsetLocalToRemote = (offsetLocalToRemoteA + offsetLocalToRemoteB) / 2;
 
-		thisOrigin = Instantiate (otherOriginPrefab, offsetLocalToRemote, Quaternion.Euler (0, angleRemoteToLocal, 0));
-		thisOrigin.GetComponent<OtherPhoneSetup> ().InitPhoneAvatar (name);
+		if (!initialized) {
+			thisOrigin = Instantiate (otherOriginPrefab, offsetLocalToRemote, Quaternion.Euler (0, angleRemoteToLocal, 0));
+			thisOrigin.GetComponent<OtherPhoneSetup> ().InitPhoneAvatar (name);
 
-		GetComponent<PlayerControl> ().SetGameStarted (thisOrigin);
+			GetComponent<PlayerControl> ().SetGameStarted (thisOrigin);
+
+			initialized = true;
+		} else {
+			thisOrigin.GetComponent<SmoothUpdate>().SetTarget(offsetLocalToRemote, Quaternion.Euler (0, angleRemoteToLocal, 0));
+		}
 
 		print ("Init Origin");
+
 	}
 
 	public Vector3 GetLocalPosition(Vector3 remotePosition){
@@ -142,8 +176,8 @@ public class TransformControl : NetworkBehaviour
 	}
 
 	private Vector3 ConvertPhoneToHumanCentroid(Vector3 phonePos){
-		Vector3 offsetZ = transform.TransformPoint(new Vector3 (0f, 0f, -.3f));
-		Vector3 offsetY = new Vector3 (0f, -.5f, 0f);
+		Vector3 offsetZ = transform.TransformPoint(new Vector3 (0f, 0f, -.1f));
+		Vector3 offsetY = new Vector3 (0f, -.6f, 0f);
 
 		return offsetZ + offsetY;
 	}
