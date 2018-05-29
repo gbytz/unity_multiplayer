@@ -28,6 +28,7 @@ public class SceneControl : MonoBehaviour
 	public GameObject localPlayer;
 	public Queue<string> lookFor = new Queue<string>();
 	public Text lookForText;
+    public GameObject lookForTextObj;
 
 
 	//TODO: remove
@@ -52,8 +53,10 @@ public class SceneControl : MonoBehaviour
 	{
 		if (lookFor.Count < 1) {
 			lookForText.text = "";
+            lookForTextObj.SetActive(false);
 		} else {
-			lookForText.text = "Tap player " + lookFor.Peek () + " when they light up!";
+			lookForText.text = "Tap Player " + lookFor.Peek () + " When They Light Up!";
+            lookForTextObj.SetActive(true);
 		}
 	}
 

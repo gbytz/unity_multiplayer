@@ -17,7 +17,7 @@ public class Health : NetworkBehaviour {
 			return;
 		}
 
-		healthBar = GameObject.Find ("GUI").GetComponent<SceneControl>().myHealth;
+        healthBar = FindObjectOfType<SceneControl>().myHealth;
 	}
 
 	void OnTriggerEnter(Collider collider)

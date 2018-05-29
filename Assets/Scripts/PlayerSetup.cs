@@ -15,8 +15,8 @@ public class PlayerSetup : NetworkBehaviour {
 		playerID = GetComponent<NetworkIdentity>().netId.ToString();
 		name = playerID;
 
-		//Add this player game object to the list of players in SceneControl
-		sceneControl = GameObject.Find ("GUI").GetComponent<SceneControl> ();
+        //Add this player game object to the list of players in SceneControl
+        sceneControl = FindObjectOfType<SceneControl>();
 		if (!isLocalPlayer) {
 			sceneControl.AddNonLocalPlayer (gameObject);
 		} else {

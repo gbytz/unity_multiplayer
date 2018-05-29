@@ -8,7 +8,7 @@ public class UpdateTransform : MonoBehaviour {
 	public TransformControl localTC;
 
 	void Start(){
-		localTC = GameObject.Find ("GUI").GetComponent<SceneControl> ().localPlayer.GetComponent<TransformControl> ();
+        localTC = FindObjectOfType<SceneControl> ().localPlayer.GetComponent<TransformControl> ();
 	}
 
 	void OnTriggerEnter(Collider other){
