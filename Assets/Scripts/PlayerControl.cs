@@ -48,7 +48,7 @@ public class PlayerControl : NetworkBehaviour {
 	public void SetGameStarted(){
 		if (!gameStarted) {
 			gameStarted = true;
-			GameObject.Find ("GUI").GetComponent<SceneControl>().StartGame ();
+            FindObjectOfType<SceneControl>().StartGame();
 		}
 	}
 
@@ -58,7 +58,7 @@ public class PlayerControl : NetworkBehaviour {
 			thisOrigin = origin;
 			GetComponent<Health> ().healthBar = thisOrigin.GetComponent<AvatarControl> ().thisAvatar.GetComponent<ShipControl> ().healthBar;
 			gameStarted = true;
-			GameObject.Find ("GUI").GetComponent<SceneControl>().StartGame ();
+            FindObjectOfType<SceneControl>().StartGame ();
 		}
 	}
 

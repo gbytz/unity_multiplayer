@@ -24,12 +24,12 @@ public class TransformControl : NetworkBehaviour
 	private bool initialized = false;
 	private float updateThresh = 1.0f;
 
-	void Start ()
-	{
-		sceneControl = GameObject.Find ("GUI").GetComponent<SceneControl> ();
-	}
 
-	void Update ()
+    private void Start()
+    {
+        sceneControl = FindObjectOfType<SceneControl>();
+    }
+    void Update ()
 	{
 
 		if (!isLocalPlayer) {
