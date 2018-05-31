@@ -22,7 +22,7 @@ public class TransformControl : NetworkBehaviour
 	private bool getTap = false;
 	private bool tap = false;
 	private bool initialized = false;
-	private float updateThresh = 1.0f;
+	private float updateThresh = 0.5f;
 
 
     private void Start()
@@ -177,7 +177,7 @@ public class TransformControl : NetworkBehaviour
 
 	private Vector3 ConvertPhoneToHumanCentroid(Vector3 phonePos){
 		Vector3 offsetZ = transform.TransformPoint(new Vector3 (0f, 0f, -.1f));
-		Vector3 offsetY = new Vector3 (0f, -.6f, 0f);
+		Vector3 offsetY = new Vector3 (0f, -.2f, 0f);
 
 		return offsetZ + offsetY;
 	}

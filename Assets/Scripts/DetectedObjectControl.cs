@@ -10,7 +10,7 @@ public class DetectedObjectControl : MonoBehaviour {
 
 	void Start(){
 		startTime = Time.fixedTime;
-		//Invoke ("DestroySelf", 0.5f);
+		Invoke ("DestroySelf", 0.5f);
 
 		if (isVisible) {
 			Invoke ("TurnOnMesh", 0.1f);

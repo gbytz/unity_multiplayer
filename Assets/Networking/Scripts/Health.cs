@@ -39,11 +39,11 @@ public class Health : NetworkBehaviour {
 	[ClientRpc]
 	void RpcChangeHealth ()
 	{
-		currentHealth -= 1;
+		currentHealth -= 10;
 		if (currentHealth <= 0)
 		{
 			currentHealth = maxHealth;
-			Debug.Log("Dead!");
+			GameObject.Find ("GUI").GetComponent<SceneControl>().Toast("Dead!", 4.0f);
 		}
 
 		healthBar.sizeDelta = new Vector2 (currentHealth, healthBar.sizeDelta.y);
