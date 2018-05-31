@@ -12,11 +12,15 @@ public class UpdateTransform : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider other){
-		print ("Ship Collided before: " + thisPlayer.name);
 		if (other.name == "SU Player(Clone)") {
-			print ("Ship Collided: " + thisPlayer.name);
 			localTC.AutoTap (thisPlayer.name, other.transform.position);
 		}
 	}
-		 
+
+	void OnTriggerStay(Collider other){
+		if (other.name == "SU Player(Clone)") {
+			localTC.AutoTap (thisPlayer.name, other.transform.position);
+		}
+	}
+
 }

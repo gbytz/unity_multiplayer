@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 114231974509670642}
   - component: {fileID: 65425631689899702}
   - component: {fileID: 54402516945385754}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: SU Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -40,7 +40,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4653323026878216}
   - component: {fileID: 114888263725255382}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Orient Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -57,7 +57,7 @@ GameObject:
   - component: {fileID: 4395783960715466}
   - component: {fileID: 23924657923801332}
   - component: {fileID: 102178313694540046}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Name
   m_TagString: Untagged
   m_Icon: {fileID: 0}

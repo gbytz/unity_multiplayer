@@ -17,7 +17,7 @@ public class PlayerControl : NetworkBehaviour {
 	public bool gameStarted;
 
 	//Variables to track how long user has been touching for a shoot
-	private float maxCount = 80f;
+	private float maxCount = 30f;
 	private int count = 1;
 
 	void Update () {
