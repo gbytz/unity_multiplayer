@@ -40,7 +40,7 @@ GameObject:
   - component: {fileID: 4369904124274068}
   - component: {fileID: 65797932685071602}
   - component: {fileID: 114360387832552830}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Transform Update
   m_TagString: Untagged
   m_Icon: {fileID: 0}
