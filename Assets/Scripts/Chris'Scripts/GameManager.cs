@@ -6,6 +6,9 @@ using UnityEngine.XR.iOS;
 
 public class GameManager : MonoBehaviour {
 
+    public SceneControl SceneController;
+
+    [Header ("ArKit Objects To Activate")]
     [SerializeField]private UnityARVideo _video = null;
     [SerializeField] private UnityARCameraNearFar _camNearFar = null;
     [SerializeField] private UnityARCameraManager _camManager = null;
@@ -32,13 +35,8 @@ public class GameManager : MonoBehaviour {
         _arRemote.enabled = true;
         #endif
 
-        StartCoroutine(StartGameRoutine());
-    }
+        SceneController.enabled = true;
 
-    IEnumerator StartGameRoutine ()
-    {
-
-
-        yield return null;
+        //StartCoroutine(StartGameRoutine());
     }
 }

@@ -18,31 +18,37 @@ public class NetworkHUD : MonoBehaviour {
     public Text JoiningText;
 
     public Dropdown ServerSelectDropdown;
+    private List<MatchInfoSnapshot> matchesList = new List<MatchInfoSnapshot>(); 
 
 	// Use this for initialization
 	void Start () {
 
         _networkManager = FindObjectOfType<NetworkManager>();
+        if (_networkManager.matchMaker == null)
+            _networkManager.StartMatchMaker();
 
         //Assign Network Commands Here
-        JoinGameBTN.onClick.AddListener(FindServers);
+        JoinGameBTN.onClick.AddListener(FindServerHook);
         HostGameBTN.onClick.AddListener(HostGame);
         CancelJoinBTN.onClick.AddListener(CancelJoin);
         ConfirmJoinBTN.onClick.AddListener(JoinGame);
 	}
-	
-	// Update is called once per frame
-	void Update () {
 
+    void FindServerHook (){
 
-	}
+        StartCoroutine(FindServers());
 
-    void FindServers ()
+    }
+
+    IEnumerator FindServers ()
     {
         if (_networkManager.matchMaker == null)
+        {
             _networkManager.StartMatchMaker();
+        }
         
         _networkManager.matchMaker.ListMatches(0, 20, "", false, 0, 0, ListMatchesCallback);
+
         JoiningText.text = "Searching...";
 
         JoinGameBTN.gameObject.SetActive(false);
@@ -51,29 +57,43 @@ public class NetworkHUD : MonoBehaviour {
         JoiningText.gameObject.SetActive(true);
         ServerSelectDropdown.gameObject.SetActive(true);
         ConfirmJoinBTN.gameObject.SetActive(true);
+
+        yield return null;
+
     }
 
     void JoinGame()
     {
+        if(ServerSelectDropdown.options.Count <= 0){
+            JoiningText.text = "No Games Available";
+            return;
+        }
 
-        //if (!_networkManager.IsClientConnected() && !NetworkServer.active && _networkManager.matchMaker == null)
-        //    _networkManager.StartClient();
+        string _targetServerName = ServerSelectDropdown.options[ServerSelectDropdown.value].text;
+        print("Server name = " + _targetServerName);
 
-
-
-        /*for (int i = 0; i < _networkManager.matches.Count; i++)
+        if (matchesList.Count > 0)
         {
-            var match = _networkManager.matches[i];
-            _networkManager.matchMaker.JoinMatch(match.networkId, "", "", "", 0, 0, _networkManager.OnMatchJoined);
-        }*/
+            for (int i = 0; i < matchesList.Count; i++)
+            {
+                var match = matchesList[i];
 
-        StartCoroutine(StartGameRoutine());
+                if (match.name == _targetServerName)
+                    _networkManager.matchMaker.JoinMatch(match.networkId, "", "", "", 0, 0, _networkManager.OnMatchJoined);
+
+                StartCoroutine(StartGameRoutine());
+            }
+        }else{
+
+            JoiningText.text = "Failed To Join Game...Select A Different Game or Try Again";
+            return;
+        }
     }
 
     private void ListMatchesCallback(bool success, string extendedInfo, List<MatchInfoSnapshot> matches)
     {
-        if(success && matches.Count > 0){
-
+        if(success && matches.Count > 0)
+        {
             ServerSelectDropdown.options.Clear();
 
             List<Dropdown.OptionData> _newMatches = new List<Dropdown.OptionData>();
@@ -81,29 +101,56 @@ public class NetworkHUD : MonoBehaviour {
             for (int i = 0; i < matches.Count; i++)
             {
                 _newMatches.Add(new Dropdown.OptionData(matches[i].name, null));
+                matchesList.Add(matches[i]);
             }
 
             ServerSelectDropdown.AddOptions(_newMatches);
+
+            JoiningText.text = "Found " + matches.Count + "Game(s)";
+
+        }else{
+            JoiningText.text = "No Games Found...Try Again";
         }
+
+        //StartCoroutine(FindServers());
     }
 
     void HostGame ()
     {
-        if (_networkManager.matchMaker == null)
-            _networkManager.StartMatchMaker();
+        _networkManager.matchMaker.CreateMatch(SystemInfo.deviceName, _networkManager.matchSize, true, "", "", "", 0, 0, OnMatchCreateCallBack);
 
-        _networkManager.matchMaker.CreateMatch(SystemInfo.deviceName, _networkManager.matchSize, true, "", "", "", 0, 0, _networkManager.OnMatchCreate);
+    }
 
-        JoiningText.text = "Starting Game... \n" + "Server Name - " + SystemInfo.deviceName;
+    void OnMatchCreateCallBack (bool success, string extendedInfo, MatchInfo matchInfo){
 
-        CancelJoinBTN.gameObject.SetActive(false);
-        JoinGameBTN.gameObject.SetActive(false);
-        JoiningText.gameObject.SetActive(true);
-        HostGameBTN.gameObject.SetActive(false);
-        ServerSelectDropdown.gameObject.SetActive(false);
-        ConfirmJoinBTN.gameObject.SetActive(false);
+        _networkManager.OnMatchCreate(success, extendedInfo, matchInfo);
 
-        StartCoroutine(StartGameRoutine());
+        if(success){
+            JoiningText.text = "Starting Game... \n" + "Server Name - " + SystemInfo.deviceName;
+
+            CancelJoinBTN.gameObject.SetActive(false);
+            JoinGameBTN.gameObject.SetActive(false);
+            JoiningText.gameObject.SetActive(true);
+            HostGameBTN.gameObject.SetActive(false);
+            ServerSelectDropdown.gameObject.SetActive(false);
+            ConfirmJoinBTN.gameObject.SetActive(false);
+
+            //StopCoroutine(FindServers());
+            StartCoroutine(StartGameRoutine());
+        }else{
+
+            JoiningText.text = "Failed To Start Game...Try Hosting Again";
+        }
+    }
+
+    IEnumerator StartGameRoutine()
+    {
+        //_networkManager.StopMatchMaker();
+
+        yield return new WaitForSeconds(0.0f);
+
+        FindObjectOfType<GameManager>().StartGame();
+        gameObject.SetActive(false);
     }
 
     void CancelJoin ()
@@ -114,18 +161,12 @@ public class NetworkHUD : MonoBehaviour {
         JoinGameBTN.gameObject.SetActive(true);
         JoinGameBTN.interactable = true;
         HostGameBTN.gameObject.SetActive(true);
-        JoiningText.gameObject.SetActive(false);
-        ServerSelectDropdown.gameObject.SetActive(false);
+
+        JoiningText.text = "Select Join or Host To Begin";
+        //JoiningText.gameObject.SetActive(false);
+        //ServerSelectDropdown.gameObject.SetActive(false);
         ConfirmJoinBTN.gameObject.SetActive(false);
-    }
 
-    IEnumerator StartGameRoutine()
-    {
-        _networkManager.StopMatchMaker();
-
-        yield return new WaitForSeconds(2.0f);
-
-        FindObjectOfType<GameManager>().StartGame();
-        gameObject.SetActive(false);
+        StopCoroutine(FindServers());
     }
 }
