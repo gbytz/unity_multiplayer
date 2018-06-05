@@ -365,7 +365,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerID: 
-  phoneAvatarPrefab: {fileID: 1024681419524828, guid: 9c9aa7ef1f92347b8aa12723a8d045cc,
+  phoneGO: {fileID: 0}
+  phoneAvatarPrefab: {fileID: 1822170080478140, guid: b8c4b2ed7fd994cfdbad77aba9c77927,
     type: 2}
 --- !u!114 &114820881745782884
 MonoBehaviour:

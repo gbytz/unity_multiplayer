@@ -9,7 +9,7 @@ public class Health : NetworkBehaviour {
 
 	public const int maxHealth = 100;
 	public int currentHealth = maxHealth;
-	public RectTransform healthBar;
+    public Image healthBar;
 
 	void Start(){
 		
@@ -43,10 +43,11 @@ public class Health : NetworkBehaviour {
 		if (currentHealth <= 0)
 		{
 			currentHealth = maxHealth;
-			GameObject.Find ("GUI").GetComponent<SceneControl>().Toast("Dead!", 4.0f);
+            FindObjectOfType<SceneControl>().Toast("Dead!", 4.0f);
 		}
 
-		healthBar.sizeDelta = new Vector2 (currentHealth, healthBar.sizeDelta.y);
+        healthBar.fillAmount = maxHealth / 100;
+		//healthBar.sizeDelta = new Vector2 (currentHealth, healthBar.sizeDelta.y);
 
 	}
 }

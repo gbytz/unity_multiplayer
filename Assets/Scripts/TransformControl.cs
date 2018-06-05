@@ -6,7 +6,6 @@ using UnityEngine.UI;
 
 public class TransformControl : NetworkBehaviour
 {
-	public GameObject tapPrefab;
 	public GameObject thisOrigin;
 	public float angleRemoteToLocal;
 	public Vector3 offsetLocalToRemote;
@@ -82,7 +81,7 @@ public class TransformControl : NetworkBehaviour
 
 		if (tap) {
 			InitOrigin ();
-			localPlayer.GetComponent<PlayerControl> ().SetGameStarted ();
+			localPlayer.GetComponent<LocalPlayerController> ().SetGameStarted ();
 		}
 
 		getTapRemoteReturn = getTapRemoteFrame;
@@ -138,7 +137,7 @@ public class TransformControl : NetworkBehaviour
 
 		if (getTap) {
 			InitOrigin ();
-			otherPlayer.GetComponent<PlayerControl> ().SetGameStarted ();
+			otherPlayer.GetComponent<LocalPlayerController> ().SetGameStarted ();
 		} else {
 			tap = true;
 		} 
@@ -160,7 +159,7 @@ public class TransformControl : NetworkBehaviour
 			thisOrigin = Instantiate (otherOriginPrefab, offsetLocalToRemote, Quaternion.Euler (0, angleRemoteToLocal, 0));
 			thisOrigin.GetComponent<OtherPhoneSetup> ().InitPhoneAvatar (name);
 
-			GetComponent<PlayerControl> ().SetGameStarted (thisOrigin);
+			GetComponent<LocalPlayerController> ().SetGameStarted (thisOrigin);
 
 			initialized = true;
 		} else {

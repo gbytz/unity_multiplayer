@@ -117,6 +117,9 @@ public class NetworkHUD : MonoBehaviour {
 
     void HostGame ()
     {
+        if (_networkManager.matchMaker == null)
+            _networkManager.StartMatchMaker();
+        
         _networkManager.matchMaker.CreateMatch(SystemInfo.deviceName, _networkManager.matchSize, true, "", "", "", 0, 0, OnMatchCreateCallBack);
 
     }
