@@ -5,10 +5,13 @@ using UnityEngine;
 using UnityEngine.Networking;
 
 [RequireComponent(typeof(Health))]
-public class PlayerControl : NetworkBehaviour {
+public class LocalPlayerController : NetworkBehaviour {
+
+    public string playerID;
+    public SceneControl sceneControl;
 
 	//Ship used for Local player
-	public GameObject localShip;
+	public GameObject LocalPlayerObject;
 
 	//Origin of this player's refrence frame
 	public GameObject thisOrigin;
@@ -20,7 +23,30 @@ public class PlayerControl : NetworkBehaviour {
 	private float maxCount = 30f;
 	private int count = 1;
 
-	void Update () {
+    private Transform _cameraTransform;
+
+
+    private void Start()
+    {
+        //Set the name of this player game object using netId
+        playerID = GetComponent<NetworkIdentity>().netId.ToString();
+        name = playerID;
+
+        sceneControl = FindObjectOfType<SceneControl>();
+
+        if (!isLocalPlayer)
+        {
+            sceneControl.AddNonLocalPlayer(gameObject);
+        }
+        else
+        {
+            sceneControl.AddLocalPlayer(gameObject);
+        }
+
+        _cameraTransform = GameObject.Find("Main Camera").transform;
+    }
+
+    void Update () {
 
 		//Only shoot if local player
 		if (!isLocalPlayer) {
@@ -41,6 +67,10 @@ public class PlayerControl : NetworkBehaviour {
 				count = 1;
 			}
 		} 
+
+
+        transform.position = _cameraTransform.position;
+        transform.rotation = _cameraTransform.rotation;
 	
 	}
 
@@ -56,7 +86,7 @@ public class PlayerControl : NetworkBehaviour {
 	public void SetGameStarted(GameObject origin){
 		if (!gameStarted) {
 			thisOrigin = origin;
-			GetComponent<Health> ().healthBar = thisOrigin.GetComponent<AvatarControl> ().thisAvatar.GetComponent<ShipControl> ().healthBar;
+			GetComponent<Health> ().healthBar = thisOrigin.GetComponent<AvatarControl> ().thisAvatar.GetComponent<ShipControl> ().HealthBar;
 			gameStarted = true;
             FindObjectOfType<SceneControl>().StartGame ();
 		}
@@ -65,7 +95,7 @@ public class PlayerControl : NetworkBehaviour {
 	//Firing for local player happens from a localship that is not visualized
 	private void LocalFire(float speedFraction){
 		if (gameStarted) {
-			localShip.GetComponent<ShipControl> ().Fire (speedFraction);
+			LocalPlayerObject.GetComponent<ShipControl> ().Fire (speedFraction);
 		}
 	}
 

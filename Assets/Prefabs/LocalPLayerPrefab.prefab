@@ -62,7 +62,7 @@ GameObject:
   - component: {fileID: 114904915401712504}
   - component: {fileID: 114407766834056950}
   m_Layer: 0
-  m_Name: Phone
+  m_Name: LocalPLayerPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -170,10 +170,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1839541846569874}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8dc09b0a9fea74886a21c79a29efc0a0, type: 3}
+  m_Script: {fileID: 11500000, guid: 4d79abbd7aa82454e9550b0861e9d028, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  localShip: {fileID: 1472609070782388}
+  playerID: 
+  sceneControl: {fileID: 0}
+  LocalPlayerObject: {fileID: 1472609070782388}
   thisOrigin: {fileID: 0}
   gameStarted: 0
 --- !u!114 &114271793925652746
@@ -211,10 +213,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e75c85ec42924673abc61302e768989, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  laserPrefab: {fileID: 1245924787516912, guid: d4f654062da41468fb959f04cd7063f9,
+  ProjectilePrefab: {fileID: 1245924787516912, guid: 690d88d956bf24f878f54f9a7ebd930f,
     type: 2}
-  laserSpawn: {fileID: 4522676788562578}
-  healthBar: {fileID: 0}
+  SpawnPoint: {fileID: 4522676788562578}
+  HealthBar: {fileID: 0}
+  Health: 100
+  PlayerMeshRenderer: {fileID: 23706956403264800}
 --- !u!114 &114618409286182774
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -305,7 +309,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e1e5a9a1ebec4c239c61b3458631198, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tapPrefab: {fileID: 1990980577190082, guid: 61fb2a727f9e34c8788103d6dfe5b9ca, type: 2}
   thisOrigin: {fileID: 0}
   angleRemoteToLocal: 0
   offsetLocalToRemote: {x: 0, y: 0, z: 0}

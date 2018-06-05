@@ -5,13 +5,13 @@ using UnityEngine.Networking;
 
 public class DefenseControl : NetworkBehaviour {
 
-	private PlayerControl playerControl;
+	private LocalPlayerController playerControl;
 	private TransformControl transformControl;
 	public GameObject defensePrefab;
 
 	// Use this for initialization
 	void Start () {
-		playerControl = GetComponent<PlayerControl> ();
+		playerControl = GetComponent<LocalPlayerController> ();
 		transformControl = GetComponent<TransformControl> ();
 	}
 

@@ -10,26 +10,30 @@ using UnityEngine.Networking;
 public class SceneControl : MonoBehaviour
 {
 
-	public GameObject hostClientPanel;
-	public Text notification;
-	public GameObject playerCanvas;
-	public RectTransform myHealth;
+    //Game Level Stuff
+    private float _detectThreshold = 0.7f;
+    public GameObject localPlayer;
 
-	public MapSession mapSession;
-	public String DEV_KEY;
+    //Game Level Prefabs
+    public GameObject ScannedObjectBoundsPrefab;
+    public GameObject otherOriginPrefab;
+    public GameObject detectedObjectPrefab;
 
-	public GameObject thisOrigin;
-	public GameObject otherOriginPrefab;
-	public GameObject SUPlayerPrefab;
-	public GameObject detectedObjectPrefab;
 
-	private float detectThresh = 0.7f;
-
-	public GameObject localPlayer;
-	public Queue<string> lookFor = new Queue<string>();
-	public Text lookForText;
+    //UI Controller Stuff
+    public Text notification;
+    public Queue<string> lookFor = new Queue<string>();
+    public Text lookForText;
     public GameObject lookForTextObj;
 
+
+
+    //Player Stuff
+    public GameObject playerCanvas;
+    public Image myHealth;
+
+    //JidoMaps Stuff
+	public MapSession mapSession;
 
 	//TODO: remove
 	public void TestTap(){
@@ -37,6 +41,9 @@ public class SceneControl : MonoBehaviour
 	}
 
 	void Start(){
+
+        //This should be added to the network join process
+        //i.e. Join/Host Match, Start Game...Start Map Session
 		Invoke ("InitMappingSession", 2.0f);
 	}
 
@@ -87,18 +94,18 @@ public class SceneControl : MonoBehaviour
 	}
 
 	public void ObjectDetectedCallback(DetectedObject detectedObject){
-		if (detectedObject.Confidence > detectThresh) {
+		if (detectedObject.Confidence > _detectThreshold) {
 
 			if (detectedObject.Name == "person") {
 				if (lookFor.Count > 0) {
 					print ("look for: " + lookFor.Count);
 					Vector3 pos = new Vector3 (detectedObject.X, detectedObject.Y, -detectedObject.Z);
-					GameObject SUPlayer = Instantiate (SUPlayerPrefab, pos, Quaternion.identity);
+					GameObject SUPlayer = Instantiate (ScannedObjectBoundsPrefab, pos, Quaternion.identity);
 					SUPlayer.transform.localScale = new Vector3 (detectedObject.Height / 3, detectedObject.Height, detectedObject.Height / 3);
 					SUPlayer.GetComponent<DetectedObjectControl> ().isVisible = true;
 				} else {
 					Vector3 pos = new Vector3 (detectedObject.X, detectedObject.Y, -detectedObject.Z);
-					GameObject SUPlayer = Instantiate (SUPlayerPrefab, pos, Quaternion.identity);
+					GameObject SUPlayer = Instantiate (ScannedObjectBoundsPrefab, pos, Quaternion.identity);
 					SUPlayer.transform.localScale = new Vector3 (detectedObject.Height / 3, detectedObject.Height, detectedObject.Height / 3);
 					SUPlayer.GetComponent<DetectedObjectControl> ().isVisible = false;
 				}
