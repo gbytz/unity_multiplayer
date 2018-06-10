@@ -5,24 +5,29 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
-public class LocalPlayerController : NetworkBehaviour {
+public class PlayerController : NetworkBehaviour {
 
     public string playerID;
     public GameManager _gameManager;
 
     public int Health;
-    public Image HealthBarImage;
+    private Image _localHealthBar;
     public const int MaxHealth = 100;
     public int CurrentHealth = MaxHealth;
 
 
 	//Ship used for Local player
 	public GameObject LocalPlayerObject;
-    public GameObject ShopModelParent;
+    public GameObject ShipVisualsParent;
+    public GameObject ShieldVisuals;
 
+    [Header("Projectile Info")]
+    public GameObject ProjectilePrefab;
+    public Transform ProjectileSpawnPoint;
+    private float _maxSpeed = 6;
 
 	//Origin of this player's refrence frame
-	public GameObject thisOrigin;
+    public GameObject thisOrigin;
 
 	//Flag set in SetGameStarted method and accessed by SceneControl
 	public bool GameStarted;
@@ -36,9 +41,17 @@ public class LocalPlayerController : NetworkBehaviour {
 
     private void Start()
     {
+        //Attach to camera and zero out the rotation in case it's changed
+        transform.SetParent(Camera.main.transform, false);
+        transform.localPosition = Vector3.zero;
+        transform.rotation = Quaternion.Euler(Vector3.zero);
+
+        Health = MaxHealth;
         _cameraTransform = Camera.main.transform;
         _gameManager = FindObjectOfType<GameManager>();
-        HealthBarImage = _gameManager.LocalPlayerHealthBar;
+        _localHealthBar = _gameManager.LocalPlayerHealthBar;
+
+        _gameManager.ShieldButton.onClick.AddListener(ActivateShield);
 
         //Set the name of this player game object using netId
         playerID = GetComponent<NetworkIdentity>().netId.ToString();
@@ -47,11 +60,12 @@ public class LocalPlayerController : NetworkBehaviour {
         if (!isLocalPlayer)
         {
             _gameManager.AddNonLocalPlayer(gameObject);
-            ShopModelParent.SetActive(true);
+            ShipVisualsParent.SetActive(true);
         }
         else
         {
             _gameManager.AddLocalPlayer(gameObject);
+            ShipVisualsParent.SetActive(false);
         }
 
     }
@@ -72,16 +86,11 @@ public class LocalPlayerController : NetworkBehaviour {
 				}
 			} else if (Input.GetTouch (0).phase == TouchPhase.Ended) {
 				float speedFraction = (float)count / maxCount;
-				LocalFire (speedFraction);
+                LocalFire (speedFraction);
 				CmdFire (speedFraction);
 				count = 1;
 			}
-		} 
-
-
-        transform.position = _cameraTransform.position;
-        transform.rotation = _cameraTransform.rotation;
-	
+        }
 	}
 
 	//For local player. Set by TransformControl
@@ -101,21 +110,17 @@ public class LocalPlayerController : NetworkBehaviour {
 		}
 	}
 
-	//Firing for local player happens from a localship that is not visualized
-	private void LocalFire(float speedFraction){
-		if (GameStarted) {
-			LocalPlayerObject.GetComponent<ShipControl> ().Fire (speedFraction);
-		}
-	}
-
     private void ActivateShield (){
-
-
+        if (isLocalPlayer)
+        {
+            ShieldVisuals.SetActive(true);
+            CmdActivateShield();
+        }
     }
 
     private void DeactivateShield (){
 
-
+        ShieldVisuals.SetActive(false);
 
     }
 
@@ -147,10 +152,28 @@ public class LocalPlayerController : NetworkBehaviour {
 		if (!GameStarted) {
 			return;
 		}
-
-		//Pass Fire to the remote player's local avatar
-		thisOrigin.GetComponent<AvatarControl>().Fire (speedFraction);
+         
+        //Pass Fire to the remote player's local avatar
+        LocalFire(speedFraction);
 	}
+
+    private void LocalFire(float speedFraction)
+    {
+        if (!isLocalPlayer)
+            return;
+        
+        // Create the Bullet from the Bullet Prefab
+        var laser = (GameObject)Instantiate(
+            ProjectilePrefab,
+            ProjectileSpawnPoint.position,
+            ProjectileSpawnPoint.rotation);
+
+        // Add velocity to the bullet scaled by how long user touched down
+        laser.GetComponent<Rigidbody>().velocity = laser.transform.forward * _maxSpeed * speedFraction;
+
+        // Destroy the bullet after 4 seconds
+        Destroy(laser, 4.0f);
+    }
 
     [Command]
     void CmdHit()
@@ -168,7 +191,34 @@ public class LocalPlayerController : NetworkBehaviour {
             FindObjectOfType<GameManager>().Toast("Dead!", 4.0f);
         }
 
-        HealthBarImage.fillAmount = MaxHealth / 100;
+        _localHealthBar.fillAmount = MaxHealth / 100;
+    }
+
+    [Command]
+    void CmdActivateShield (){
+        RpcActivateShield();
+
+    }
+
+    //Send Fire to Client players
+    [ClientRpc]
+    void RpcActivateShield()
+    {
+        //For some reason this sometimes get called on the local player
+        if (isLocalPlayer)
+        {
+            print("Local RPC");
+            return;
+        }
+
+        /*if (!GameStarted)
+        {
+            return;
+        }*/
+
+        //Pass Fire to the remote player's local avatar
+
+        ActivateShield();
     }
 
     [Command]

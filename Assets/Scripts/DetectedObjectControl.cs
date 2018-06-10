@@ -29,7 +29,6 @@ public class DetectedObjectControl : MonoBehaviour {
 
 	void OnTriggerEnter(Collider other){
 		if (other.name == name) {
-
 			if (other.GetComponent<DetectedObjectControl> ().startTime < startTime) {
 				transform.position = (transform.position + other.transform.position) / 2;
 				transform.localScale = (transform.localScale + other.transform.localScale) / 2;

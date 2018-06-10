@@ -45,13 +45,12 @@ public class TransformControl : NetworkBehaviour
 					Debug.Log ("Hit " + hit.collider.name);
 				}
 
-                if (hitSomething && hit.collider.GetComponent<DetectedObject>() != null) {
+                if (hitSomething && hit.collider.GetComponent<DetectedObjectControl>() != null) {
 					Debug.Log ("tapped person");
 					Tap (_gameManager.lookFor.Dequeue (), hit.collider.transform.position);
 					Destroy (hit.collider.gameObject);
 				}
 			}
-
 		}
 	}
 
@@ -79,7 +78,7 @@ public class TransformControl : NetworkBehaviour
 
 		if (tap) {
 			InitOrigin ();
-			localPlayer.GetComponent<LocalPlayerController> ().SetGameStarted ();
+			localPlayer.GetComponent<PlayerController> ().SetGameStarted ();
 		}
 
 		getTapRemoteReturn = getTapRemoteFrame;
@@ -135,7 +134,7 @@ public class TransformControl : NetworkBehaviour
 
 		if (getTap) {
 			InitOrigin ();
-			otherPlayer.GetComponent<LocalPlayerController> ().SetGameStarted ();
+			otherPlayer.GetComponent<PlayerController> ().SetGameStarted ();
 		} else {
 			tap = true;
 		} 
@@ -155,9 +154,9 @@ public class TransformControl : NetworkBehaviour
 
 		if (!initialized) {
             ThisObjectsOrigin = Instantiate (OriginPrefab, offsetLocalToRemote, Quaternion.Euler (0, angleRemoteToLocal, 0));
-            ThisObjectsOrigin.GetComponent<OtherPhoneSetup> ().InitPhoneAvatar (name);
+            //ThisObjectsOrigin.GetComponent<OtherPhoneSetup> ().InitPhoneAvatar (name);
 
-            GetComponent<LocalPlayerController> ().SetGameStarted (ThisObjectsOrigin);
+            GetComponent<PlayerController> ().SetGameStarted (ThisObjectsOrigin);
 
 			initialized = true;
 		} else {

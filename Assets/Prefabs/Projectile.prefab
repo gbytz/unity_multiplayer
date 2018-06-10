@@ -39,10 +39,9 @@ GameObject:
   - component: {fileID: 54148810398009012}
   - component: {fileID: 65803165193517684}
   - component: {fileID: 114848747392212506}
-  - component: {fileID: 114247325111671808}
   m_Layer: 2
   m_Name: Projectile
-  m_TagString: Untagged
+  m_TagString: Projectile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -214,19 +213,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.71, y: 0.16, z: 0.5}
   m_Center: {x: 0, y: -0.03, z: 0.21}
---- !u!114 &114247325111671808
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1245924787516912}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 47d2152d27b4a4dae8d9164277dc91c3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  PlayerTagToHit: 
-  SentFromPlayer: {fileID: 0}
 --- !u!114 &114848747392212506
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -238,3 +224,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 150224fb2b8364b85a6adee32c537755, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  TagToIgnore: Projectile

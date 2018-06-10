@@ -4,10 +4,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Networking;
 using UnityEngine.Networking.Match;
+using UnityEngine.SceneManagement;
 
 public class NetworkHUD : MonoBehaviour {
 
     private NetworkManager _networkManager;
+
+    public GameObject Container;
 
     public Button JoinGameBTN;
     public Button HostGameBTN;
@@ -26,13 +29,33 @@ public class NetworkHUD : MonoBehaviour {
         _networkManager = FindObjectOfType<NetworkManager>();
         if (_networkManager.matchMaker == null)
             _networkManager.StartMatchMaker();
-
+        
         //Assign Network Commands Here
         JoinGameBTN.onClick.AddListener(FindServerHook);
         HostGameBTN.onClick.AddListener(HostGame);
         CancelJoinBTN.onClick.AddListener(CancelJoin);
         ConfirmJoinBTN.onClick.AddListener(JoinGame);
 	}
+
+    private void Update()
+    {
+        /*if(_networkManager.client != null && _networkManager.IsClientConnected() == false && Container.activeSelf == false)
+        {
+            print("LostConnection");
+            LostConnection();
+        }*/
+
+    }
+
+    void ToggleNetworkLobbyVisuals (bool onOff){
+
+        Container.SetActive(onOff);
+    }
+
+    void LostConnection(){
+        ToggleNetworkLobbyVisuals(true);
+        SceneManager.LoadScene(0);//Restart game. Resets all object and GUI's
+    }
 
     void FindServerHook (){
 
@@ -153,7 +176,7 @@ public class NetworkHUD : MonoBehaviour {
         yield return new WaitForSeconds(0.0f);
 
         FindObjectOfType<GameManager>().StartGame();
-        gameObject.SetActive(false);
+        ToggleNetworkLobbyVisuals(false);
     }
 
     void CancelJoin ()

@@ -15,7 +15,7 @@ public class OtherPhoneSetup : MonoBehaviour {
 		phoneAvatar = Instantiate (phoneAvatarPrefab);
 		GetComponent<AvatarControl> ().thisAvatar = phoneAvatar;
 		phoneGO = GameObject.Find(playerID);
-		phoneGO.GetComponent<LocalPlayerController> ().SetGameStarted (gameObject);
+		phoneGO.GetComponent<PlayerController> ().SetGameStarted (gameObject);
 
 		phoneAvatar.GetComponentInChildren<UpdateTransform> ().thisPlayer = phoneGO;
 
