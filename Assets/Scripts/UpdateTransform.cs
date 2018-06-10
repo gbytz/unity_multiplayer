@@ -12,13 +12,13 @@ public class UpdateTransform : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider other){
-		if (other.name == "SU Player(Clone)") {
+        if (other.GetComponent<DetectedObjectControl>() != null) {
 			localTC.AutoTap (thisPlayer.name, other.transform.position);
 		}
 	}
 
 	void OnTriggerStay(Collider other){
-		if (other.name == "SU Player(Clone)") {
+        if (other.GetComponent<DetectedObjectControl>() != null) {
 			localTC.AutoTap (thisPlayer.name, other.transform.position);
 		}
 	}

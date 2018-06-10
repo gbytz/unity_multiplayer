@@ -5,13 +5,13 @@ using UnityEngine.Networking;
 
 public class DefenseControl : NetworkBehaviour {
 
-	private LocalPlayerController playerControl;
+	private PlayerController playerControl;
 	private TransformControl transformControl;
 	public GameObject defensePrefab;
 
 	// Use this for initialization
 	void Start () {
-		playerControl = GetComponent<LocalPlayerController> ();
+		playerControl = GetComponent<PlayerController> ();
 		transformControl = GetComponent<TransformControl> ();
 	}
 
@@ -28,7 +28,7 @@ public class DefenseControl : NetworkBehaviour {
 				RaycastHit hit;
 				bool hitSomething = Physics.Raycast (ray, out hit, Mathf.Infinity);
 
-				if (hitSomething && hit.collider.name == "Detected Object(Clone)") {
+                if (hitSomething && hit.collider.GetComponent<DetectedObjectControl>()) {
 					Vector3 pos = hit.collider.transform.position;
 					Instantiate (defensePrefab, pos, Quaternion.identity);
 					CmdPlaceDetectedObject (pos);

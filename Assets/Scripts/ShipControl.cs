@@ -17,14 +17,13 @@ public class ShipControl : MonoBehaviour {
     [Header("Object References")]
     public Image HealthBar; //This ship's healthBar display
     public Renderer PlayerMeshRenderer;
-    private Material _playerMaterial;
+    //private Material _playerMaterial;
 
 
     private void Start()
     {
-        _playerMaterial = PlayerMeshRenderer.material;
-
-        Invoke("TakeDamage", 2);
+        //_playerMaterial = PlayerMeshRenderer.material;
+        //Invoke("TakeDamage", 2);
     }
 
 
@@ -45,8 +44,7 @@ public class ShipControl : MonoBehaviour {
 
     public void TakeDamage()
     {
-        _playerMaterial.SetColor("_EmissionColor", Color.red);
+        //_playerMaterial.SetColor("_EmissionColor", Color.red);
         Debug.Log("Changed to Red!");
-
     }
 }

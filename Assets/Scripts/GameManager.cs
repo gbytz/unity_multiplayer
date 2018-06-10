@@ -29,6 +29,7 @@ public class GameManager : MonoBehaviour
     public GameObject LocalPlayerReference;
     public GameObject InGameUI;
     public Image LocalPlayerHealthBar;
+    public Button ShieldButton;
 
     [Header("PlayerNetworkInfo")]
     public string LocalPlayerID;
@@ -54,13 +55,19 @@ public class GameManager : MonoBehaviour
 		//Invoke ("InitMappingSession", 2.0f);
 	}
 
+    public void LostConnection (){
+        InGameUI.SetActive(false);
+    }
+
 	public void AddLocalPlayer(GameObject localPlayer){
 		this.LocalPlayerReference = localPlayer;
+        LocalPlayerID = localPlayer.name;
 	}
 
 	public void AddNonLocalPlayer(GameObject playerID){
 		lookFor.Enqueue (playerID.name);
 		UpdateLookForDisplay ();
+        OtherPlayerID = playerID.name;
 	}
 
 	public void UpdateLookForDisplay ()
@@ -76,7 +83,7 @@ public class GameManager : MonoBehaviour
 
 	public void StartGame()
     {
-        EnableARKit();
+        ToggleArKitObjects(true);
 		InGameUI.SetActive (true);
         InitMappingSession();
 	}
@@ -108,9 +115,9 @@ public class GameManager : MonoBehaviour
 				if (lookFor.Count > 0) {
 					print ("look for: " + lookFor.Count);
 					Vector3 pos = new Vector3 (detectedObject.X, detectedObject.Y, -detectedObject.Z);
-					GameObject SUPlayer = Instantiate (ScannedObjectBoundsPrefab, pos, Quaternion.identity);
-					SUPlayer.transform.localScale = new Vector3 (detectedObject.Height / 3, detectedObject.Height, detectedObject.Height / 3);
-					SUPlayer.GetComponent<DetectedObjectControl> ().isVisible = true;
+					GameObject DetectedObjVisual = Instantiate (ScannedObjectBoundsPrefab, pos, Quaternion.identity);
+                    DetectedObjVisual.transform.localScale = new Vector3 (detectedObject.Height / 3, detectedObject.Height, detectedObject.Height / 3);
+					DetectedObjVisual.GetComponent<DetectedObjectControl> ().isVisible = true;
 				} else {
 					Vector3 pos = new Vector3 (detectedObject.X, detectedObject.Y, -detectedObject.Z);
 					GameObject SUPlayer = Instantiate (ScannedObjectBoundsPrefab, pos, Quaternion.identity);
@@ -118,9 +125,9 @@ public class GameManager : MonoBehaviour
 					SUPlayer.GetComponent<DetectedObjectControl> ().isVisible = false;
 				}
 			} else if (lookFor.Count < 1 && detectedObject.Name == "chair"){
-								Vector3 pos = new Vector3 (detectedObject.X, detectedObject.Y, -detectedObject.Z);
-								GameObject DO = Instantiate (detectedObjectPrefab, pos, Quaternion.identity);
-								DO.transform.localScale = new Vector3 (detectedObject.Height / 2, detectedObject.Height, detectedObject.Height / 2);
+					Vector3 pos = new Vector3 (detectedObject.X, detectedObject.Y, -detectedObject.Z);
+					GameObject DO = Instantiate (detectedObjectPrefab, pos, Quaternion.identity);
+					DO.transform.localScale = new Vector3 (detectedObject.Height / 2, detectedObject.Height, detectedObject.Height / 2);
 			}
 		}
 	}
@@ -148,13 +155,13 @@ public class GameManager : MonoBehaviour
         NotificationText.gameObject.SetActive (OnOff);
 	}
 
-    void EnableARKit()
+    void ToggleArKitObjects(bool onOff)
     {
         if (Application.isEditor == false)
         {
-            _video.enabled = true;
-            _camNearFar.enabled = true;
-            _camManager.enabled = true;
+            _video.enabled = onOff;
+            _camNearFar.enabled = onOff;
+            _camManager.enabled = onOff;
         }
     }
 

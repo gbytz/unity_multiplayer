@@ -5,7 +5,7 @@ using UnityEngine;
 public class NetworkedProjectile : MonoBehaviour {
 
     public string PlayerTagToHit;
-    public LocalPlayerController SentFromPlayer;
+    public PlayerController SentFromPlayer;
 
     private void HitTarget(){
 
