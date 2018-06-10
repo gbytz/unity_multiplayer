@@ -6,7 +6,7 @@ using UnityEngine.Networking;
 public class PlayerSetup : NetworkBehaviour {
 
 	public string playerID;
-	public SceneControl sceneControl;
+	public GameManager sceneControl;
 
 
 	void Start () {
@@ -16,7 +16,7 @@ public class PlayerSetup : NetworkBehaviour {
 		name = playerID;
 
         //Add this player game object to the list of players in SceneControl
-        sceneControl = FindObjectOfType<SceneControl>();
+        sceneControl = FindObjectOfType<GameManager>();
 		if (!isLocalPlayer) {
 			sceneControl.AddNonLocalPlayer (gameObject);
 		} else {

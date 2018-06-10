@@ -6,13 +6,16 @@ using UnityEngine.UI;
 
 public class ShipControl : MonoBehaviour {
 
+    [Header("Prefab References")]
     public GameObject ProjectilePrefab;
-	public Transform SpawnPoint;
-	public Image HealthBar; //This ship's healthBar display
+	public Transform ProjectileSpawnPoint;
 
-	private float maxSpeed = 6;
-
+    [Header("Player Properties")]
     public int Health = 100;
+    private float maxSpeed = 6;
+
+    [Header("Object References")]
+    public Image HealthBar; //This ship's healthBar display
     public Renderer PlayerMeshRenderer;
     private Material _playerMaterial;
 
@@ -29,8 +32,8 @@ public class ShipControl : MonoBehaviour {
 		// Create the Bullet from the Bullet Prefab
 		var laser = (GameObject)Instantiate (
 			ProjectilePrefab,
-			SpawnPoint.position,
-			SpawnPoint.rotation);
+			ProjectileSpawnPoint.position,
+			ProjectileSpawnPoint.rotation);
 
 		// Add velocity to the bullet scaled by how long user touched down
 		laser.GetComponent<Rigidbody>().velocity = laser.transform.forward * maxSpeed * speedFraction;

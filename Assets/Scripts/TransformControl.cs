@@ -6,12 +6,12 @@ using UnityEngine.UI;
 
 public class TransformControl : NetworkBehaviour
 {
-	public GameObject thisOrigin;
-	public float angleRemoteToLocal;
+	public GameObject ThisObjectsOrigin;
+    public float angleRemoteToLocal;
 	public Vector3 offsetLocalToRemote;
 
-	public GameObject otherOriginPrefab;
-	public SceneControl sceneControl;
+	public GameObject OriginPrefab;
+    private GameManager _gameManager;
 
 	private Vector3 getTapLocalFrame;
 	private Vector3 getTapRemoteFrame;
@@ -26,16 +26,15 @@ public class TransformControl : NetworkBehaviour
 
     private void Start()
     {
-        sceneControl = FindObjectOfType<SceneControl>();
+        _gameManager = FindObjectOfType<GameManager>();
     }
     void Update ()
 	{
-
 		if (!isLocalPlayer) {
 			return;
 		}
 
-		if (Input.touchCount > 0 && sceneControl.lookFor.Count > 0) {
+		if (Input.touchCount > 0 && _gameManager.lookFor.Count > 0) {
 
 			if (Input.GetTouch (0).phase == TouchPhase.Began) {
 				Ray ray = Camera.main.ScreenPointToRay (Input.GetTouch (0).position);
@@ -46,9 +45,9 @@ public class TransformControl : NetworkBehaviour
 					Debug.Log ("Hit " + hit.collider.name);
 				}
 
-				if (hitSomething && hit.collider.name == "SU Player(Clone)") {
+                if (hitSomething && hit.collider.GetComponent<DetectedObject>() != null) {
 					Debug.Log ("tapped person");
-					Tap (sceneControl.lookFor.Dequeue (), hit.collider.transform.position);
+					Tap (_gameManager.lookFor.Dequeue (), hit.collider.transform.position);
 					Destroy (hit.collider.gameObject);
 				}
 			}
@@ -72,7 +71,6 @@ public class TransformControl : NetworkBehaviour
 			}
 
 			print ("Close enough: " + Vector3.Distance (remoteDiff, localDiff));
-
 		}
 
 		getTapLocalFrame = localPos;
@@ -91,7 +89,7 @@ public class TransformControl : NetworkBehaviour
 	//TODO: For testing purposes in Unity Editor
 	public void TestTap ()
 	{
-		Tap (sceneControl.lookFor.Dequeue (), new Vector3 (0, 0, 1));
+		Tap (_gameManager.lookFor.Dequeue (), new Vector3 (0, 0, 1));
 	}
 
 	private void Tap (string otherID, Vector3 tapLocalFrame)
@@ -102,7 +100,7 @@ public class TransformControl : NetworkBehaviour
 
 		CmdRemoteTap (otherID, tapLocalFrame, tapRemoteFrame);
 
-		sceneControl.UpdateLookForDisplay ();
+		_gameManager.UpdateLookForDisplay ();
 
 	}
 
@@ -156,18 +154,15 @@ public class TransformControl : NetworkBehaviour
 		offsetLocalToRemote = (offsetLocalToRemoteA + offsetLocalToRemoteB) / 2;
 
 		if (!initialized) {
-			thisOrigin = Instantiate (otherOriginPrefab, offsetLocalToRemote, Quaternion.Euler (0, angleRemoteToLocal, 0));
-			thisOrigin.GetComponent<OtherPhoneSetup> ().InitPhoneAvatar (name);
+            ThisObjectsOrigin = Instantiate (OriginPrefab, offsetLocalToRemote, Quaternion.Euler (0, angleRemoteToLocal, 0));
+            ThisObjectsOrigin.GetComponent<OtherPhoneSetup> ().InitPhoneAvatar (name);
 
-			GetComponent<LocalPlayerController> ().SetGameStarted (thisOrigin);
+            GetComponent<LocalPlayerController> ().SetGameStarted (ThisObjectsOrigin);
 
 			initialized = true;
 		} else {
-			thisOrigin.GetComponent<SmoothUpdate>().SetTarget(offsetLocalToRemote, Quaternion.Euler (0, angleRemoteToLocal, 0));
+            ThisObjectsOrigin.GetComponent<SmoothUpdate>().SetTarget(offsetLocalToRemote, Quaternion.Euler (0, angleRemoteToLocal, 0));
 		}
-
-		print ("Init Origin");
-
 	}
 
 	public Vector3 GetLocalPosition(Vector3 remotePosition){
@@ -180,6 +175,4 @@ public class TransformControl : NetworkBehaviour
 
 		return offsetZ + offsetY;
 	}
-
-
 }

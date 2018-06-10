@@ -8,7 +8,7 @@ public class UpdateTransform : MonoBehaviour {
 	public TransformControl localTC;
 
 	void Start(){
-        localTC = FindObjectOfType<SceneControl> ().localPlayer.GetComponent<TransformControl> ();
+        localTC = FindObjectOfType<GameManager> ().LocalPlayerReference.GetComponent<TransformControl> ();
 	}
 
 	void OnTriggerEnter(Collider other){
@@ -22,5 +22,4 @@ public class UpdateTransform : MonoBehaviour {
 			localTC.AutoTap (thisPlayer.name, other.transform.position);
 		}
 	}
-
 }

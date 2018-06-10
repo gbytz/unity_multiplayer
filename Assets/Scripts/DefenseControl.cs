@@ -21,7 +21,7 @@ public class DefenseControl : NetworkBehaviour {
 			return;
 		}
 
-		if (Input.touchCount > 0 && playerControl.gameStarted ) {
+		if (Input.touchCount > 0 && playerControl.GameStarted ) {
 
 			if (Input.GetTouch (0).phase == TouchPhase.Began) {
 				Ray ray = Camera.main.ScreenPointToRay (Input.GetTouch (0).position);

@@ -304,12 +304,6 @@ Light:
   m_UseColorTemperature: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
---- !u!114 &32628533 stripped
-MonoBehaviour:
-  m_PrefabParentObject: {fileID: 114792311999422744, guid: f3cdd84d78cfa4112b81a0f9d6fc0a42,
-    type: 2}
-  m_PrefabInternal: {fileID: 1221232117}
-  m_Script: {fileID: 11500000, guid: a9cc10b4974c74751aff4ba98b6d2473, type: 3}
 --- !u!1 &55066102
 GameObject:
   m_ObjectHideFlags: 0
@@ -969,38 +963,11 @@ Prefab:
       propertyPath: m_RootOrder
       value: 8
       objectReference: {fileID: 0}
-    - target: {fileID: 23105096307088338, guid: 5bc41f6c8ff774ef6ba0e5fd4de8584e,
-        type: 2}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 68c15b3c34d0246718218bb2e58ce9b6, type: 2}
     - target: {fileID: 1205558268257590, guid: 5bc41f6c8ff774ef6ba0e5fd4de8584e, type: 2}
       propertyPath: m_Name
       value: This Origin
       objectReference: {fileID: 0}
-    - target: {fileID: 23105096307088338, guid: 5bc41f6c8ff774ef6ba0e5fd4de8584e,
-        type: 2}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 23833022000949684, guid: 5bc41f6c8ff774ef6ba0e5fd4de8584e,
-        type: 2}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 23211544894491422, guid: 5bc41f6c8ff774ef6ba0e5fd4de8584e,
-        type: 2}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 23306091077505444, guid: 5bc41f6c8ff774ef6ba0e5fd4de8584e,
-        type: 2}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 114142379989816300, guid: 5bc41f6c8ff774ef6ba0e5fd4de8584e, type: 2}
-    - {fileID: 114874049558245356, guid: 5bc41f6c8ff774ef6ba0e5fd4de8584e, type: 2}
+    m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 5bc41f6c8ff774ef6ba0e5fd4de8584e, type: 2}
   m_IsPrefabParent: 0
 --- !u!1 &544494115
@@ -1546,7 +1513,7 @@ Prefab:
     - target: {fileID: 114792311999422744, guid: f3cdd84d78cfa4112b81a0f9d6fc0a42,
         type: 2}
       propertyPath: DeveloperKey
-      value: AKIAJJD7BIQNQGOPCS4AJU1wpxw8ehMpbZw8rKLCJTV7j2DMT1scPr5FRjaw
+      value:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f3cdd84d78cfa4112b81a0f9d6fc0a42, type: 2}
@@ -2194,23 +2161,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 2141739439}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f5848218edd104e808f9fc08767937a0, type: 3}
+  m_Script: {fileID: 0}
   m_Name: 
   m_EditorClassIdentifier: 
-  localPlayer: {fileID: 1839541846569874, guid: 896b92e8a041a4d05ad18900b94e294d,
-    type: 2}
-  ScannedObjectBoundsPrefab: {fileID: 1650586230031792, guid: 5fde5e5556239491eb5c060be1e3cb76,
-    type: 2}
-  otherOriginPrefab: {fileID: 1205558268257590, guid: 5bc41f6c8ff774ef6ba0e5fd4de8584e,
-    type: 2}
-  detectedObjectPrefab: {fileID: 1650586230031792, guid: 727b5ba01eee14061a0e1f0492e8b6dc,
-    type: 2}
-  notification: {fileID: 55066103}
-  lookForText: {fileID: 1209308854}
-  lookForTextObj: {fileID: 1209308852}
-  playerCanvas: {fileID: 1261711942}
-  myHealth: {fileID: 1052065387}
-  mapSession: {fileID: 32628533}
 --- !u!114 &2141739441
 MonoBehaviour:
   m_ObjectHideFlags: 0

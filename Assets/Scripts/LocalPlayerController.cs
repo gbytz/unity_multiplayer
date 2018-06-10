@@ -3,21 +3,29 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.UI;
 
-[RequireComponent(typeof(Health))]
 public class LocalPlayerController : NetworkBehaviour {
 
     public string playerID;
-    public SceneControl sceneControl;
+    public GameManager _gameManager;
+
+    public int Health;
+    public Image HealthBarImage;
+    public const int MaxHealth = 100;
+    public int CurrentHealth = MaxHealth;
+
 
 	//Ship used for Local player
 	public GameObject LocalPlayerObject;
+    public GameObject ShopModelParent;
+
 
 	//Origin of this player's refrence frame
 	public GameObject thisOrigin;
 
 	//Flag set in SetGameStarted method and accessed by SceneControl
-	public bool gameStarted;
+	public bool GameStarted;
 
 	//Variables to track how long user has been touching for a shoot
 	private float maxCount = 30f;
@@ -28,22 +36,24 @@ public class LocalPlayerController : NetworkBehaviour {
 
     private void Start()
     {
+        _cameraTransform = Camera.main.transform;
+        _gameManager = FindObjectOfType<GameManager>();
+        HealthBarImage = _gameManager.LocalPlayerHealthBar;
+
         //Set the name of this player game object using netId
         playerID = GetComponent<NetworkIdentity>().netId.ToString();
         name = playerID;
 
-        sceneControl = FindObjectOfType<SceneControl>();
-
         if (!isLocalPlayer)
         {
-            sceneControl.AddNonLocalPlayer(gameObject);
+            _gameManager.AddNonLocalPlayer(gameObject);
+            ShopModelParent.SetActive(true);
         }
         else
         {
-            sceneControl.AddLocalPlayer(gameObject);
+            _gameManager.AddLocalPlayer(gameObject);
         }
 
-        _cameraTransform = GameObject.Find("Main Camera").transform;
     }
 
     void Update () {
@@ -76,28 +86,48 @@ public class LocalPlayerController : NetworkBehaviour {
 
 	//For local player. Set by TransformControl
 	public void SetGameStarted(){
-		if (!gameStarted) {
-			gameStarted = true;
-            FindObjectOfType<SceneControl>().StartGame();
+		if (!GameStarted) {
+			GameStarted = true;
+            FindObjectOfType<GameManager>().StartGame();
 		}
 	}
 
 	//For remote player. Set by OtherPhoneSetup
 	public void SetGameStarted(GameObject origin){
-		if (!gameStarted) {
+		if (!GameStarted) {
 			thisOrigin = origin;
-			GetComponent<Health> ().healthBar = thisOrigin.GetComponent<AvatarControl> ().thisAvatar.GetComponent<ShipControl> ().HealthBar;
-			gameStarted = true;
-            FindObjectOfType<SceneControl>().StartGame ();
+   			GameStarted = true;
+            FindObjectOfType<GameManager>().StartGame ();
 		}
 	}
 
 	//Firing for local player happens from a localship that is not visualized
 	private void LocalFire(float speedFraction){
-		if (gameStarted) {
+		if (GameStarted) {
 			LocalPlayerObject.GetComponent<ShipControl> ().Fire (speedFraction);
 		}
 	}
+
+    private void ActivateShield (){
+
+
+    }
+
+    private void DeactivateShield (){
+
+
+
+    }
+
+    void OnTriggerEnter(Collider collider)
+    {
+        if (!isLocalPlayer)
+        {
+            return;
+        }
+
+        CmdHit();
+    }
 
 	//Send Fire to Host
 	[Command]
@@ -114,12 +144,49 @@ public class LocalPlayerController : NetworkBehaviour {
 			return;
 		}
 
-		if (!gameStarted) {
+		if (!GameStarted) {
 			return;
 		}
 
 		//Pass Fire to the remote player's local avatar
 		thisOrigin.GetComponent<AvatarControl>().Fire (speedFraction);
 	}
-		
+
+    [Command]
+    void CmdHit()
+    {
+        RpcChangeHealth();
+    }
+
+    [ClientRpc]
+    void RpcChangeHealth()
+    {
+        CurrentHealth -= 10;
+        if (CurrentHealth <= 0)
+        {
+            CurrentHealth = MaxHealth;
+            FindObjectOfType<GameManager>().Toast("Dead!", 4.0f);
+        }
+
+        HealthBarImage.fillAmount = MaxHealth / 100;
+    }
+
+    [Command]
+    public void CmdPlaceDetectedObject(Vector3 position)
+    {
+        RpcPlaceDetectedObject(position);
+    }
+
+    [ClientRpc]
+    public void RpcPlaceDetectedObject(Vector3 position)
+    {
+        if (isLocalPlayer)
+        {
+            return;
+        }
+
+        //FindObjectOfType<LocalPlayerController>().ActivateShield();
+
+        //Instantiate(defensePrefab, transformControl.GetLocalPosition(position), Quaternion.identity);
+    }
 }

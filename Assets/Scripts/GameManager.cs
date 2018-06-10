@@ -7,48 +7,55 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.Networking;
 
-public class SceneControl : MonoBehaviour
+public class GameManager : MonoBehaviour
 {
 
     //Game Level Stuff
     private float _detectThreshold = 0.7f;
-    public GameObject localPlayer;
-
-    //Game Level Prefabs
+    [Header("Game Level Settings")]
     public GameObject ScannedObjectBoundsPrefab;
     public GameObject otherOriginPrefab;
     public GameObject detectedObjectPrefab;
 
-
+    [Header("UI Objects")]
     //UI Controller Stuff
-    public Text notification;
+    public Text NotificationText;
     public Queue<string> lookFor = new Queue<string>();
-    public Text lookForText;
-    public GameObject lookForTextObj;
+    public Text LookForText;
+    public GameObject LookForTextObject;
 
-
-
+    [Header("PlayerObjects")]
     //Player Stuff
-    public GameObject playerCanvas;
-    public Image myHealth;
+    public GameObject LocalPlayerReference;
+    public GameObject InGameUI;
+    public Image LocalPlayerHealthBar;
 
+    [Header("PlayerNetworkInfo")]
+    public string LocalPlayerID;
+    public string OtherPlayerID;
+
+
+    [Header("Jido Maps Objects")]
     //JidoMaps Stuff
-	public MapSession mapSession;
+    private MapSession MapSessionInstance;
 
-	//TODO: remove
-	public void TestTap(){
-		localPlayer.GetComponent<TransformControl>().TestTap ();
-	}
+    //ARKit Objects Used to Initialize Manually On Game Start
+    [Header("ArKit Objects To Activate")]
+    [SerializeField] private UnityARVideo _video = null;
+    [SerializeField] private UnityARCameraNearFar _camNearFar = null;
+    [SerializeField] private UnityARCameraManager _camManager = null;
 
 	void Start(){
 
+        MapSessionInstance = FindObjectOfType<MapSession>();
+
         //This should be added to the network join process
         //i.e. Join/Host Match, Start Game...Start Map Session
-		Invoke ("InitMappingSession", 2.0f);
+		//Invoke ("InitMappingSession", 2.0f);
 	}
 
 	public void AddLocalPlayer(GameObject localPlayer){
-		this.localPlayer = localPlayer;
+		this.LocalPlayerReference = localPlayer;
 	}
 
 	public void AddNonLocalPlayer(GameObject playerID){
@@ -59,38 +66,39 @@ public class SceneControl : MonoBehaviour
 	public void UpdateLookForDisplay ()
 	{
 		if (lookFor.Count < 1) {
-			lookForText.text = "";
-            lookForTextObj.SetActive(false);
+            LookForText.text = "";
+            LookForTextObject.SetActive(false);
 		} else {
-			lookForText.text = "Tap Player " + lookFor.Peek () + " When They Light Up!";
-            lookForTextObj.SetActive(true);
+            LookForText.text = "Tap Player " + lookFor.Peek () + " When They Light Up!";
+            LookForTextObject.SetActive(true);
 		}
 	}
 
-	public void StartGame(){
-		playerCanvas.SetActive (true);
+	public void StartGame()
+    {
+        EnableARKit();
+		InGameUI.SetActive (true);
+        InitMappingSession();
 	}
 
 	private void InitMappingSession ()
 	{
-
 		//Mapsession initialization
 		bool isMappingMode = true;
 		string mapID = "Jido";
 		string userID = "Multiplayer";
 
-		mapSession.Init (isMappingMode ? MapMode.MapModeMapping : MapMode.MapModeLocalization, userID, mapID);
+		MapSessionInstance.Init (isMappingMode ? MapMode.MapModeMapping : MapMode.MapModeLocalization, userID, mapID);
 
-		mapSession.ObjectDetectedEvent += ObjectDetectedCallback;
+		MapSessionInstance.ObjectDetectedEvent += ObjectDetectedCallback;
 		//Set callback to handly MapStatus updates
-		mapSession.StatusChangedEvent += StatusChangedCallback;
+		MapSessionInstance.StatusChangedEvent += StatusChangedCallback;
 
 		//Set callback that confirms when assets are stored
-		mapSession.AssetStoredEvent += AssetStoredCallback;
+		MapSessionInstance.AssetStoredEvent += AssetStoredCallback;
 
 		//Set Callback for when assets are reloaded
-		mapSession.AssetLoadedEvent += AssetLoadedCallback;
-
+		MapSessionInstance.AssetLoadedEvent += AssetLoadedCallback;
 	}
 
 	public void ObjectDetectedCallback(DetectedObject detectedObject){
@@ -128,14 +136,31 @@ public class SceneControl : MonoBehaviour
 
 	public void Toast (String message, float time)
 	{
-		notification.text = message;
-		notification.gameObject.SetActive (true);
+		NotificationText.text = message;
+        ToggleToast(true);
+
 		CancelInvoke ();
 		Invoke ("ToastOff", time);
 	}
 
-	public void ToastOff ()
+	public void ToggleToast (bool OnOff)
 	{
-		notification.gameObject.SetActive (false);
+        NotificationText.gameObject.SetActive (OnOff);
 	}
+
+    void EnableARKit()
+    {
+        if (Application.isEditor == false)
+        {
+            _video.enabled = true;
+            _camNearFar.enabled = true;
+            _camManager.enabled = true;
+        }
+    }
+
+    //TODO: remove
+    public void TestTap()
+    {
+        LocalPlayerReference.GetComponent<TransformControl>().TestTap();
+    }
 }

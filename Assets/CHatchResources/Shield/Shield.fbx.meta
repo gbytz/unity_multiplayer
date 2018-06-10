@@ -1,17 +1,16 @@
 fileFormatVersion: 2
-guid: 78e0c464b410e4bd2a82d09a89bd2407
-timeCreated: 1528142934
+guid: 7d9e62c82ffcb4f5887a64273b0df109
+timeCreated: 1528584569
 licenseType: Pro
 ModelImporter:
   serializedVersion: 22
   fileIDToRecycleName:
     100000: //RootNode
     400000: //RootNode
-    2100000: Glass
-    2100002: SpaceShipBody
+    2100000: phong1
     2300000: //RootNode
     3300000: //RootNode
-    4300000: pSphere3
+    4300000: pCube1
   externalObjects: {}
   materials:
     importMaterials: 1
@@ -42,7 +41,7 @@ ModelImporter:
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 0.025
+    globalScale: 0.1
     meshCompression: 0
     addColliders: 0
     importVisibility: 1
