@@ -7,7 +7,7 @@ public class LookAtCamera : MonoBehaviour {
 	GameObject mainCamera;
 
 	void Start() {
-		mainCamera = GameObject.Find ("Main Camera");
+        mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
 	}
 
 	void Update () {

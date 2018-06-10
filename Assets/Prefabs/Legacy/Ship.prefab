@@ -628,7 +628,7 @@ MonoBehaviour:
   ProjectilePrefab: {fileID: 1245924787516912, guid: d4f654062da41468fb959f04cd7063f9,
     type: 2}
   SpawnPoint: {fileID: 4510196468430384}
-  HealthBar: {fileID: 224585049810010934}
+  HealthBar: {fileID: 0}
   Health: 100
   PlayerMeshRenderer: {fileID: 23122470227017996}
 --- !u!114 &114936918544446170

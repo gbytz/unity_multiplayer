@@ -53,9 +53,9 @@ GameObject:
   - component: {fileID: 4638387445726268}
   - component: {fileID: 114842552811045466}
   - component: {fileID: 65049687203825956}
-  - component: {fileID: 114200685685845826}
+  - component: {fileID: 114234148419587284}
   m_Layer: 0
-  m_Name: PlayerPrefab
+  m_Name: OtherPlayerPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -142,7 +142,7 @@ GameObject:
   - component: {fileID: 114746747551809496}
   - component: {fileID: 114535134028559422}
   m_Layer: 5
-  m_Name: WorldSpaceUI
+  m_Name: WorldSpaceUI(OtherPlayerCanvas)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -232,7 +232,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 78e0c464b410e4bd2a82d09a89bd2407, type: 3}
+  - {fileID: 2100000, guid: 1b789395e661641a29133cc30b2dcbb4, type: 2}
   - {fileID: 2100000, guid: 9733c0b53ee6d4e38bf5d5d5d77c1b42, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -259,7 +259,7 @@ MeshFilter:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1966789821381938}
-  m_Mesh: {fileID: 4300000, guid: 78e0c464b410e4bd2a82d09a89bd2407, type: 3}
+  m_Mesh: {fileID: 4300000, guid: 57dd8b48d702a45cdafe64cc78cda30d, type: 3}
 --- !u!65 &65049687203825956
 BoxCollider:
   m_ObjectHideFlags: 1
@@ -284,7 +284,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 5, y: 10, z: 5}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &114200685685845826
+--- !u!114 &114234148419587284
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -295,14 +295,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f08fce0b305347a9a3ddcef205427c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerCanvas: {fileID: 0}
-  myHealth: {fileID: 0}
+  playerCanvas: {fileID: 1972856112441322}
+  myHealth: {fileID: 224506156763503368}
   thisOrigin: {fileID: 0}
-  HealthBar: {fileID: 0}
-  ProjectilePrefab: {fileID: 0}
-  SpawnPoint: {fileID: 0}
+  HealthBar: {fileID: 224506156763503368}
+  ProjectilePrefab: {fileID: 1245924787516912, guid: 690d88d956bf24f878f54f9a7ebd930f,
+    type: 2}
+  SpawnPoint: {fileID: 4978473760612504}
   Health: 100
-  PlayerMeshRenderer: {fileID: 0}
+  PlayerMeshRenderer: {fileID: 23255228452956794}
 --- !u!114 &114423182719462174
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -343,14 +344,14 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 10911, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: fcefb1e66c64741de97c40cb48759fc2, type: 3}
+  m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
-  m_FillMethod: 4
+  m_FillMethod: 0
   m_FillAmount: 1
   m_FillClockwise: 1
-  m_FillOrigin: 0
+  m_FillOrigin: 1
 --- !u!114 &114535134028559422
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -363,8 +364,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShouldBillBoard: 1
-  Controller: {fileID: 114200685685845826}
-  HealthBar: {fileID: 224928336467245902}
+  Controller: {fileID: 0}
+  HealthBar: {fileID: 114492561171623466}
 --- !u!114 &114553962337910980
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -407,9 +408,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ProjectilePrefab: {fileID: 1245924787516912, guid: 690d88d956bf24f878f54f9a7ebd930f,
     type: 2}
-  SpawnPoint: {fileID: 4978473760612504}
-  HealthBar: {fileID: 114492561171623466}
+  ProjectileSpawnPoint: {fileID: 4978473760612504}
   Health: 100
+  HealthBar: {fileID: 114492561171623466}
   PlayerMeshRenderer: {fileID: 23255228452956794}
 --- !u!114 &114938265547123710
 MonoBehaviour:
@@ -430,8 +431,8 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 10911, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 0}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
