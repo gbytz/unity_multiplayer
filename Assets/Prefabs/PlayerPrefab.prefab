@@ -162,8 +162,9 @@ GameObject:
   - component: {fileID: 114721575740924290}
   - component: {fileID: 114904915401712504}
   - component: {fileID: 114407766834056950}
+  - component: {fileID: 114229861892484240}
   m_Layer: 0
-  m_Name: LocalPlayerPrefab
+  m_Name: PlayerPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -189,8 +190,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1598399983005958}
   m_LocalRotation: {x: -0, y: 0.0000004768371, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.596}
-  m_LocalScale: {x: 0.8000007, y: 0.79999983, z: 0.8000007}
+  m_LocalPosition: {x: 0, y: 0, z: 0.6}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4265835476834120}
   m_RootOrder: 1
@@ -406,6 +407,19 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
+--- !u!114 &114229861892484240
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1839541846569874}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a1e40e2adc22459cb4c36967d47e322, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerID: 
+  phoneGO: {fileID: 0}
 --- !u!114 &114265710413107522
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -439,7 +453,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1839541846569874}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f1fbd89654705400b8117f767abde279, type: 3}
   m_Name: 

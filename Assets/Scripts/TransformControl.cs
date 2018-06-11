@@ -107,7 +107,8 @@ public class TransformControl : NetworkBehaviour
 	{
 		TransformControl otherTC = GameObject.Find (otherID).GetComponent<TransformControl> ();
 
-		if (otherTC.GetTap (gameObject, tapLocalFrame, out tapRemoteFrame)) {
+		if (otherTC.GetTap (gameObject, tapLocalFrame, out tapRemoteFrame)) 
+        {
 			CmdRemoteTap (otherID, tapLocalFrame, tapRemoteFrame);
 		}
 	}
@@ -140,10 +141,8 @@ public class TransformControl : NetworkBehaviour
 		} 
 	}
 
-
 	private void InitOrigin ()
 	{
-
 		Vector3 localVector = getTapLocalFrame - tapLocalFrame;
 		Vector3 remoteVector = getTapRemoteFrame - tapRemoteFrame;
 
@@ -154,9 +153,9 @@ public class TransformControl : NetworkBehaviour
 
 		if (!initialized) {
             ThisObjectsOrigin = Instantiate (OriginPrefab, offsetLocalToRemote, Quaternion.Euler (0, angleRemoteToLocal, 0));
-            //ThisObjectsOrigin.GetComponent<OtherPhoneSetup> ().InitPhoneAvatar (name);
+            ThisObjectsOrigin.GetComponent<OtherPhoneSetup> ().InitPhoneAvatar (name);
 
-            GetComponent<PlayerController> ().SetGameStarted (ThisObjectsOrigin);
+            GetComponent<PlayerController>().SetGameStarted (ThisObjectsOrigin);
 
 			initialized = true;
 		} else {
@@ -164,11 +163,13 @@ public class TransformControl : NetworkBehaviour
 		}
 	}
 
-	public Vector3 GetLocalPosition(Vector3 remotePosition){
+	public Vector3 GetLocalPosition(Vector3 remotePosition)
+    {
 		return offsetLocalToRemote + Quaternion.AngleAxis (angleRemoteToLocal, Vector3.up) * remotePosition;
 	}
 
-	private Vector3 ConvertPhoneToHumanCentroid(Vector3 phonePos){
+	private Vector3 ConvertPhoneToHumanCentroid(Vector3 phonePos)
+    {
 		Vector3 offsetZ = transform.TransformPoint(new Vector3 (0f, 0f, -.1f));
 		Vector3 offsetY = new Vector3 (0f, -.2f, 0f);
 
