@@ -10,11 +10,11 @@ public class PlayerController : NetworkBehaviour {
     public string playerID;
     public GameManager _gameManager;
 
+    //[SyncVar(hook = "OnChangeHealth")]
     public int Health;
     private Image _localHealthBar;
     public const int MaxHealth = 100;
     public int CurrentHealth = MaxHealth;
-
 
 	//Ship used for Local player
 	public GameObject LocalPlayerObject;
@@ -38,19 +38,10 @@ public class PlayerController : NetworkBehaviour {
 
     private Transform _cameraTransform;
 
-
     private void Start()
     {
-        Health = MaxHealth;
         _cameraTransform = Camera.main.transform;
         _gameManager = FindObjectOfType<GameManager>();
-        _localHealthBar = _gameManager.LocalPlayerHealthBar;
-
-        _gameManager.ShieldButton.onClick.AddListener(ActivateShield);
-
-        //Set the name of this player game object using netId
-        playerID = GetComponent<NetworkIdentity>().netId.ToString();
-        name = playerID;
 
         if (!isLocalPlayer)
         {
@@ -64,6 +55,15 @@ public class PlayerController : NetworkBehaviour {
             transform.localPosition = Vector3.zero;
             transform.rotation = Quaternion.Euler(Vector3.zero);
 
+            Health = MaxHealth;
+
+            //Set the name of this player game object using netId
+            playerID = GetComponent<NetworkIdentity>().netId.ToString();
+            name = playerID;
+
+            _localHealthBar = _gameManager.LocalPlayerHealthBar;
+
+            _gameManager.ShieldButton.onClick.AddListener(ActivateShield);
             _gameManager.AddLocalPlayer(gameObject);
             ShipVisualsParent.SetActive(false);
         }
@@ -89,7 +89,7 @@ public class PlayerController : NetworkBehaviour {
 				}
 			} else if (Input.GetTouch (0).phase == TouchPhase.Ended) {
 				float speedFraction = (float)count / maxCount;
-                LocalFire (speedFraction);
+                Fire (speedFraction);
 				CmdFire (speedFraction);
 				count = 1;
 			}
@@ -137,6 +137,24 @@ public class PlayerController : NetworkBehaviour {
         CmdHit();
     }
 
+    private void Fire(float speedFraction)
+    {
+        if (!isLocalPlayer)
+            return;
+
+        // Create the Bullet from the Bullet Prefab
+        var laser = (GameObject)Instantiate(
+            ProjectilePrefab,
+            ProjectileSpawnPoint.position,
+            ProjectileSpawnPoint.rotation);
+
+        // Add velocity to the bullet scaled by how long user touched down
+        laser.GetComponent<Rigidbody>().velocity = laser.transform.forward * _maxSpeed * speedFraction;
+
+        // Destroy the bullet after 4 seconds
+        Destroy(laser, 4.0f);
+    }
+
 	//Send Fire to Host
 	[Command]
 	void CmdFire(float speedFraction){
@@ -152,31 +170,17 @@ public class PlayerController : NetworkBehaviour {
 			return;
 		}
 
+        print("Remote Fire Before Game Started");
+
 		if (!GameStarted) {
 			return;
 		}
          
+        print("Remote Fire After Game Started");
+
         //Pass Fire to the remote player's local avatar
-        LocalFire(speedFraction);
+        Fire(speedFraction);
 	}
-
-    private void LocalFire(float speedFraction)
-    {
-        if (!isLocalPlayer)
-            return;
-        
-        // Create the Bullet from the Bullet Prefab
-        var laser = (GameObject)Instantiate(
-            ProjectilePrefab,
-            ProjectileSpawnPoint.position,
-            ProjectileSpawnPoint.rotation);
-
-        // Add velocity to the bullet scaled by how long user touched down
-        laser.GetComponent<Rigidbody>().velocity = laser.transform.forward * _maxSpeed * speedFraction;
-
-        // Destroy the bullet after 4 seconds
-        Destroy(laser, 4.0f);
-    }
 
     [Command]
     void CmdHit()
@@ -198,29 +202,16 @@ public class PlayerController : NetworkBehaviour {
     }
 
     [Command]
-    void CmdActivateShield (){
+    void CmdActivateShield()
+    {
         RpcActivateShield();
 
     }
-
     //Send Fire to Client players
     [ClientRpc]
     void RpcActivateShield()
     {
         //For some reason this sometimes get called on the local player
-        if (isLocalPlayer)
-        {
-            print("Local RPC");
-            return;
-        }
-
-        /*if (!GameStarted)
-        {
-            return;
-        }*/
-
-        //Pass Fire to the remote player's local avatar
-
         ActivateShield();
     }
 
