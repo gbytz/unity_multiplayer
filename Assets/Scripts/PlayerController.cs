@@ -41,11 +41,6 @@ public class PlayerController : NetworkBehaviour {
 
     private void Start()
     {
-        //Attach to camera and zero out the rotation in case it's changed
-        transform.SetParent(Camera.main.transform, false);
-        transform.localPosition = Vector3.zero;
-        transform.rotation = Quaternion.Euler(Vector3.zero);
-
         Health = MaxHealth;
         _cameraTransform = Camera.main.transform;
         _gameManager = FindObjectOfType<GameManager>();
@@ -64,6 +59,11 @@ public class PlayerController : NetworkBehaviour {
         }
         else
         {
+            //Attach to camera and zero out the rotation in case it's changed
+            transform.SetParent(Camera.main.transform, false);
+            transform.localPosition = Vector3.zero;
+            transform.rotation = Quaternion.Euler(Vector3.zero);
+
             _gameManager.AddLocalPlayer(gameObject);
             ShipVisualsParent.SetActive(false);
         }
@@ -74,6 +74,9 @@ public class PlayerController : NetworkBehaviour {
 
 		//Only shoot if local player
 		if (!isLocalPlayer) {
+            //Taken from other phone set up
+            //transform.position = transform.position + transform.rotation * phoneGO.transform.position;
+            //transform.rotation = transform.rotation * phoneGO.transform.rotation;
 			return;
 		}
 

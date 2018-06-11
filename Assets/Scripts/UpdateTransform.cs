@@ -11,6 +11,11 @@ public class UpdateTransform : MonoBehaviour {
         localTC = FindObjectOfType<GameManager> ().LocalPlayerReference.GetComponent<TransformControl> ();
 	}
 
+
+
+    //If this object is intersecting with a "Detected Object" world object then sync up the location
+
+
 	void OnTriggerEnter(Collider other){
         if (other.GetComponent<DetectedObjectControl>() != null) {
 			localTC.AutoTap (thisPlayer.name, other.transform.position);

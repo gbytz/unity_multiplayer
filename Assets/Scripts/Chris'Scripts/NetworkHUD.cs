@@ -175,8 +175,8 @@ public class NetworkHUD : MonoBehaviour {
 
         yield return new WaitForSeconds(0.0f);
 
-        FindObjectOfType<GameManager>().StartGame();
         ToggleNetworkLobbyVisuals(false);
+        FindObjectOfType<GameManager>().StartGame();
     }
 
     void CancelJoin ()

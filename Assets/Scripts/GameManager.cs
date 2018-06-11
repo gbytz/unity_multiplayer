@@ -9,13 +9,11 @@ using UnityEngine.Networking;
 
 public class GameManager : MonoBehaviour
 {
-
     //Game Level Stuff
     private float _detectThreshold = 0.7f;
     [Header("Game Level Settings")]
     public GameObject ScannedObjectBoundsPrefab;
     public GameObject otherOriginPrefab;
-    public GameObject detectedObjectPrefab;
 
     [Header("UI Objects")]
     //UI Controller Stuff
@@ -52,7 +50,7 @@ public class GameManager : MonoBehaviour
 
         //This should be added to the network join process
         //i.e. Join/Host Match, Start Game...Start Map Session
-		//Invoke ("InitMappingSession", 2.0f);
+		Invoke ("InitMappingSession", 2.0f);
 	}
 
     public void LostConnection (){
@@ -85,7 +83,6 @@ public class GameManager : MonoBehaviour
     {
         ToggleArKitObjects(true);
 		InGameUI.SetActive (true);
-        InitMappingSession();
 	}
 
 	private void InitMappingSession ()
@@ -109,8 +106,9 @@ public class GameManager : MonoBehaviour
 	}
 
 	public void ObjectDetectedCallback(DetectedObject detectedObject){
-		if (detectedObject.Confidence > _detectThreshold) {
-
+		
+        if (detectedObject.Confidence > _detectThreshold) 
+        {
 			if (detectedObject.Name == "person") {
 				if (lookFor.Count > 0) {
 					print ("look for: " + lookFor.Count);
@@ -120,13 +118,13 @@ public class GameManager : MonoBehaviour
 					DetectedObjVisual.GetComponent<DetectedObjectControl> ().isVisible = true;
 				} else {
 					Vector3 pos = new Vector3 (detectedObject.X, detectedObject.Y, -detectedObject.Z);
-					GameObject SUPlayer = Instantiate (ScannedObjectBoundsPrefab, pos, Quaternion.identity);
-					SUPlayer.transform.localScale = new Vector3 (detectedObject.Height / 3, detectedObject.Height, detectedObject.Height / 3);
-					SUPlayer.GetComponent<DetectedObjectControl> ().isVisible = false;
+                    GameObject DetectedObjVisual = Instantiate (ScannedObjectBoundsPrefab, pos, Quaternion.identity);
+                    DetectedObjVisual.transform.localScale = new Vector3 (detectedObject.Height / 3, detectedObject.Height, detectedObject.Height / 3);
+                    DetectedObjVisual.GetComponent<DetectedObjectControl> ().isVisible = false;
 				}
 			} else if (lookFor.Count < 1 && detectedObject.Name == "chair"){
 					Vector3 pos = new Vector3 (detectedObject.X, detectedObject.Y, -detectedObject.Z);
-					GameObject DO = Instantiate (detectedObjectPrefab, pos, Quaternion.identity);
+                    GameObject DO = Instantiate (ScannedObjectBoundsPrefab, pos, Quaternion.identity);
 					DO.transform.localScale = new Vector3 (detectedObject.Height / 2, detectedObject.Height, detectedObject.Height / 2);
 			}
 		}
