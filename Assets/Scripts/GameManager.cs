@@ -71,23 +71,21 @@ public class GameManager : MonoBehaviour
 
 	public void AddDetectedObject(DetectedObject detectedObject){
 		if (detectedObject.Name == "person") {
+			
 			if (lookFor.Count > 0) {
-				print ("look for: " + lookFor.Count);
-				Vector3 pos = new Vector3 (detectedObject.X, detectedObject.Y, -detectedObject.Z);
-				GameObject DetectedObjVisual = Instantiate (ScannedObjectBoundsPrefab, pos, Quaternion.identity);
+				GameObject DetectedObjVisual = Instantiate (ScannedObjectBoundsPrefab, detectedObject.Position, Quaternion.identity);
 				DetectedObjVisual.transform.localScale = new Vector3 (detectedObject.Height / 3, detectedObject.Height, detectedObject.Height / 3);
 				DetectedObjVisual.GetComponent<DetectedObjectControl> ().isVisible = true;
 			} else {
-				Vector3 pos = new Vector3 (detectedObject.X, detectedObject.Y, -detectedObject.Z);
-				GameObject DetectedObjVisual = Instantiate (ScannedObjectBoundsPrefab, pos, Quaternion.identity);
+				GameObject DetectedObjVisual = Instantiate (ScannedObjectBoundsPrefab, detectedObject.Position, Quaternion.identity);
 				DetectedObjVisual.transform.localScale = new Vector3 (detectedObject.Height / 3, detectedObject.Height, detectedObject.Height / 3);
 				DetectedObjVisual.GetComponent<DetectedObjectControl> ().isVisible = false;
 			}
-		} else if (lookFor.Count < 1 && detectedObject.Name == "chair"){
-			Vector3 pos = new Vector3 (detectedObject.X, detectedObject.Y, -detectedObject.Z);
-			GameObject DO = Instantiate (ScannedObjectBoundsPrefab, pos, Quaternion.identity);
-			DO.transform.localScale = new Vector3 (detectedObject.Height / 2, detectedObject.Height, detectedObject.Height / 2);
 		}
+//		} else if (lookFor.Count < 1 && detectedObject.Name == "chair"){
+//			GameObject DO = Instantiate (ScannedObjectBoundsPrefab, detectedObject.Position, Quaternion.identity);
+//			DO.transform.localScale = new Vector3 (detectedObject.Height / 2, detectedObject.Height, detectedObject.Height / 2);
+//		}
 	}
 		
 	public void Toast (String message, float time)

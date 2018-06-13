@@ -90,7 +90,7 @@ GameObject:
   - component: {fileID: 114869474938884450}
   - component: {fileID: 65455337255754876}
   - component: {fileID: 114721575740924290}
-  - component: {fileID: 114407766834056950}
+  - component: {fileID: 114866593320736754}
   - component: {fileID: 114229861892484240}
   m_Layer: 0
   m_Name: PlayerPrefab
@@ -391,19 +391,6 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
---- !u!114 &114407766834056950
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1839541846569874}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f1fbd89654705400b8117f767abde279, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  defensePrefab: {fileID: 1232578769277254, guid: 33356cabc5a324988bfb67abb11abeb5,
-    type: 2}
 --- !u!114 &114618409286182774
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -471,6 +458,17 @@ MonoBehaviour:
   ShipVisualsParent: {fileID: 1958041973448920}
   ShieldVisuals: {fileID: 1022105870652558}
   ProjectileSpawnPoint: {fileID: 4058229055971644}
+--- !u!114 &114866593320736754
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1839541846569874}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aec25c56cac8f466aa038af5ca04b246, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114869474938884450
 MonoBehaviour:
   m_ObjectHideFlags: 1
