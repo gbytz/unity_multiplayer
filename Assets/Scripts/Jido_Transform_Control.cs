@@ -4,14 +4,15 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
-public class TransformControl : NetworkBehaviour
+public class Jido_Transform_Control : NetworkBehaviour
 {
-	public GameObject ThisObjectsOrigin;
-    public float angleRemoteToLocal;
-	public Vector3 offsetLocalToRemote;
+	private GameManager _gameManager;
 
-	public GameObject OriginPrefab;
-    private GameManager _gameManager;
+	private GameObject playerModel;
+
+	//Reference Frame
+	private Quaternion rotationRemoteToLocal;
+	private Vector3 offsetLocalToRemote;
 
 	private Vector3 getTapLocalFrame;
 	private Vector3 getTapRemoteFrame;
@@ -23,35 +24,49 @@ public class TransformControl : NetworkBehaviour
 	private bool initialized = false;
 	private float updateThresh = 0.5f;
 
+	private Vector3 updateOffset;
+	private Quaternion updateRotation;
+	private bool updateTarget;
+	private float speed = 2.0f;
 
     private void Start()
     {
         _gameManager = FindObjectOfType<GameManager>();
     }
+
     void Update ()
 	{
-		if (!isLocalPlayer) {
-			return;
-		}
+		if (isLocalPlayer) {
+			if (Input.touchCount > 0 && _gameManager.lookFor.Count > 0) {
 
-		if (Input.touchCount > 0 && _gameManager.lookFor.Count > 0) {
+				if (Input.GetTouch (0).phase == TouchPhase.Began) {
+					Ray ray = Camera.main.ScreenPointToRay (Input.GetTouch (0).position);
+					RaycastHit hit;
+					bool hitSomething = Physics.Raycast (ray, out hit, Mathf.Infinity);
+					Debug.Log ("Hit " + hitSomething.ToString ());
+					if (hitSomething) {
+						Debug.Log ("Hit " + hit.collider.name);
+					}
 
-			if (Input.GetTouch (0).phase == TouchPhase.Began) {
-				Ray ray = Camera.main.ScreenPointToRay (Input.GetTouch (0).position);
-				RaycastHit hit;
-				bool hitSomething = Physics.Raycast (ray, out hit, Mathf.Infinity);
-				Debug.Log ("Hit " + hitSomething.ToString ());
-				if (hitSomething) {
-					Debug.Log ("Hit " + hit.collider.name);
-				}
-
-                if (hitSomething && hit.collider.GetComponent<DetectedObjectControl>() != null) {
-					Debug.Log ("tapped person");
-					Tap (_gameManager.lookFor.Dequeue (), hit.collider.transform.position);
-					Destroy (hit.collider.gameObject);
+					if (hitSomething && hit.collider.GetComponent<DetectedObjectControl> () != null) {
+						Debug.Log ("tapped person");
+						Tap (_gameManager.lookFor.Dequeue (), hit.collider.transform.position);
+						Destroy (hit.collider.gameObject);
+					}
 				}
 			}
+		} else {
+			if (initialized) {
+				if (updateTarget) {
+					offsetLocalToRemote = Vector3.Lerp (offsetLocalToRemote, updateOffset, Time.deltaTime * speed);
+					rotationRemoteToLocal = Quaternion.Lerp (rotationRemoteToLocal, updateRotation, Time.deltaTime * speed);
+				}
+				playerModel.transform.position = offsetLocalToRemote + rotationRemoteToLocal * transform.position;
+				playerModel.transform.rotation = rotationRemoteToLocal * transform.rotation;
+			}
 		}
+
+
 	}
 
 	public bool GetTap (GameObject localPlayer, Vector3 localPos, out Vector3 getTapRemoteReturn)
@@ -93,7 +108,7 @@ public class TransformControl : NetworkBehaviour
 
 	private void Tap (string otherID, Vector3 tapLocalFrame)
 	{
-		TransformControl otherTC = GameObject.Find (otherID).GetComponent<TransformControl> ();
+		Jido_Transform_Control otherTC = GameObject.Find (otherID).GetComponent<Jido_Transform_Control> ();
 
 		otherTC.GetTap (gameObject, tapLocalFrame, out tapRemoteFrame);
 
@@ -105,7 +120,7 @@ public class TransformControl : NetworkBehaviour
 
 	public void AutoTap (string otherID, Vector3 tapLocalFrame)
 	{
-		TransformControl otherTC = GameObject.Find (otherID).GetComponent<TransformControl> ();
+		Jido_Transform_Control otherTC = GameObject.Find (otherID).GetComponent<Jido_Transform_Control> ();
 
 		if (otherTC.GetTap (gameObject, tapLocalFrame, out tapRemoteFrame)) 
         {
@@ -124,7 +139,8 @@ public class TransformControl : NetworkBehaviour
 	public void RpcRemoteTap (string otherID, Vector3 tapRemote, Vector3 tapLocal)
 	{
 		GameObject otherPlayer = GameObject.Find (otherID);
-		TransformControl otherTC = otherPlayer.GetComponent<TransformControl> ();
+		print ("looking for: " + otherID);
+		Jido_Transform_Control otherTC = otherPlayer.GetComponent<Jido_Transform_Control> ();
 		if (!otherTC.isLocalPlayer) {
 			return;
 		}
@@ -132,6 +148,8 @@ public class TransformControl : NetworkBehaviour
 		this.tapRemoteFrame = tapRemote;
 		this.tapLocalFrame = tapLocal;
 		tap = true;
+
+		print ("Got Remote Tapped");
 
 		if (getTap) {
 			InitOrigin ();
@@ -146,26 +164,29 @@ public class TransformControl : NetworkBehaviour
 		Vector3 localVector = getTapLocalFrame - tapLocalFrame;
 		Vector3 remoteVector = getTapRemoteFrame - tapRemoteFrame;
 
-		angleRemoteToLocal = Vector3.SignedAngle (remoteVector, localVector, Vector3.up);
-		Vector3 offsetLocalToRemoteA = getTapLocalFrame - Quaternion.AngleAxis (angleRemoteToLocal, Vector3.up) * getTapRemoteFrame;
-		Vector3 offsetLocalToRemoteB = tapLocalFrame - Quaternion.AngleAxis (angleRemoteToLocal, Vector3.up) * tapRemoteFrame;
-		offsetLocalToRemote = (offsetLocalToRemoteA + offsetLocalToRemoteB) / 2;
+		float angleRemoteToLocal = Vector3.SignedAngle (remoteVector, localVector, Vector3.up);
+		Quaternion _rotationRemoteToLocal = Quaternion.Euler (0, angleRemoteToLocal, 0);
+		Vector3 offsetLocalToRemoteA = getTapLocalFrame - rotationRemoteToLocal * getTapRemoteFrame;
+		Vector3 offsetLocalToRemoteB = tapLocalFrame - rotationRemoteToLocal * tapRemoteFrame;
+		Vector3 _offsetLocalToRemote = (offsetLocalToRemoteA + offsetLocalToRemoteB) / 2;
 
 		if (!initialized) {
-            ThisObjectsOrigin = Instantiate (OriginPrefab, offsetLocalToRemote, Quaternion.Euler (0, angleRemoteToLocal, 0));
-            ThisObjectsOrigin.GetComponent<OtherPhoneSetup> ().InitPhoneAvatar (name);
-
-            GetComponent<PlayerController>().SetGameStarted (ThisObjectsOrigin);
-
+			offsetLocalToRemote = _offsetLocalToRemote;
+			rotationRemoteToLocal = _rotationRemoteToLocal;
+			playerModel = Instantiate (_gameManager.PlayerModelPrefab);
+			playerModel.name = name;
+			GetComponent<PlayerController>().SetGameStarted (playerModel);
 			initialized = true;
 		} else {
-            ThisObjectsOrigin.GetComponent<SmoothUpdate>().SetTarget(offsetLocalToRemote, Quaternion.Euler (0, angleRemoteToLocal, 0));
+			updateTarget = true;
+			updateOffset = _offsetLocalToRemote;
+			updateRotation = _rotationRemoteToLocal;
 		}
 	}
 
 	public Vector3 GetLocalPosition(Vector3 remotePosition)
     {
-		return offsetLocalToRemote + Quaternion.AngleAxis (angleRemoteToLocal, Vector3.up) * remotePosition;
+		return offsetLocalToRemote + rotationRemoteToLocal * remotePosition;
 	}
 
 	private Vector3 ConvertPhoneToHumanCentroid(Vector3 phonePos)
