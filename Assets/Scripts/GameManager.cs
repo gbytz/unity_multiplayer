@@ -9,11 +9,9 @@ using UnityEngine.Networking;
 
 public class GameManager : MonoBehaviour
 {
-    //Game Level Stuff
-    private float _detectThreshold = 0.7f;
     [Header("Game Level Settings")]
     public GameObject ScannedObjectBoundsPrefab;
-    public GameObject otherOriginPrefab;
+    public GameObject PlayerModelPrefab;
 
     [Header("UI Objects")]
     //UI Controller Stuff
@@ -33,25 +31,11 @@ public class GameManager : MonoBehaviour
     public string LocalPlayerID;
     public string OtherPlayerID;
 
-
-    [Header("Jido Maps Objects")]
-    //JidoMaps Stuff
-    private MapSession MapSessionInstance;
-
     //ARKit Objects Used to Initialize Manually On Game Start
     [Header("ArKit Objects To Activate")]
     [SerializeField] private UnityARVideo _video = null;
     [SerializeField] private UnityARCameraNearFar _camNearFar = null;
     [SerializeField] private UnityARCameraManager _camManager = null;
-
-	void Start(){
-
-        MapSessionInstance = FindObjectOfType<MapSession>();
-
-        //This should be added to the network join process
-        //i.e. Join/Host Match, Start Game...Start Map Session
-		Invoke ("InitMappingSession", 2.0f);
-	}
 
     public void LostConnection (){
         InGameUI.SetActive(false);
@@ -85,60 +69,27 @@ public class GameManager : MonoBehaviour
 		InGameUI.SetActive (true);
 	}
 
-	private void InitMappingSession ()
-	{
-		//Mapsession initialization
-		bool isMappingMode = true;
-		string mapID = "Jido";
-		string userID = "Multiplayer";
-
-		MapSessionInstance.Init (isMappingMode ? MapMode.MapModeMapping : MapMode.MapModeLocalization, userID, mapID);
-
-		MapSessionInstance.ObjectDetectedEvent += ObjectDetectedCallback;
-		//Set callback to handly MapStatus updates
-		MapSessionInstance.StatusChangedEvent += StatusChangedCallback;
-
-		//Set callback that confirms when assets are stored
-		MapSessionInstance.AssetStoredEvent += AssetStoredCallback;
-
-		//Set Callback for when assets are reloaded
-		MapSessionInstance.AssetLoadedEvent += AssetLoadedCallback;
-	}
-
-	public void ObjectDetectedCallback(DetectedObject detectedObject){
-		
-        if (detectedObject.Confidence > _detectThreshold) 
-        {
-			if (detectedObject.Name == "person") {
-				if (lookFor.Count > 0) {
-					print ("look for: " + lookFor.Count);
-					Vector3 pos = new Vector3 (detectedObject.X, detectedObject.Y, -detectedObject.Z);
-					GameObject DetectedObjVisual = Instantiate (ScannedObjectBoundsPrefab, pos, Quaternion.identity);
-                    DetectedObjVisual.transform.localScale = new Vector3 (detectedObject.Height / 3, detectedObject.Height, detectedObject.Height / 3);
-					DetectedObjVisual.GetComponent<DetectedObjectControl> ().isVisible = true;
-				} else {
-					Vector3 pos = new Vector3 (detectedObject.X, detectedObject.Y, -detectedObject.Z);
-                    GameObject DetectedObjVisual = Instantiate (ScannedObjectBoundsPrefab, pos, Quaternion.identity);
-                    DetectedObjVisual.transform.localScale = new Vector3 (detectedObject.Height / 3, detectedObject.Height, detectedObject.Height / 3);
-                    DetectedObjVisual.GetComponent<DetectedObjectControl> ().isVisible = false;
-				}
-			} else if (lookFor.Count < 1 && detectedObject.Name == "chair"){
-					Vector3 pos = new Vector3 (detectedObject.X, detectedObject.Y, -detectedObject.Z);
-                    GameObject DO = Instantiate (ScannedObjectBoundsPrefab, pos, Quaternion.identity);
-					DO.transform.localScale = new Vector3 (detectedObject.Height / 2, detectedObject.Height, detectedObject.Height / 2);
+	public void AddDetectedObject(DetectedObject detectedObject){
+		if (detectedObject.Name == "person") {
+			if (lookFor.Count > 0) {
+				print ("look for: " + lookFor.Count);
+				Vector3 pos = new Vector3 (detectedObject.X, detectedObject.Y, -detectedObject.Z);
+				GameObject DetectedObjVisual = Instantiate (ScannedObjectBoundsPrefab, pos, Quaternion.identity);
+				DetectedObjVisual.transform.localScale = new Vector3 (detectedObject.Height / 3, detectedObject.Height, detectedObject.Height / 3);
+				DetectedObjVisual.GetComponent<DetectedObjectControl> ().isVisible = true;
+			} else {
+				Vector3 pos = new Vector3 (detectedObject.X, detectedObject.Y, -detectedObject.Z);
+				GameObject DetectedObjVisual = Instantiate (ScannedObjectBoundsPrefab, pos, Quaternion.identity);
+				DetectedObjVisual.transform.localScale = new Vector3 (detectedObject.Height / 3, detectedObject.Height, detectedObject.Height / 3);
+				DetectedObjVisual.GetComponent<DetectedObjectControl> ().isVisible = false;
 			}
+		} else if (lookFor.Count < 1 && detectedObject.Name == "chair"){
+			Vector3 pos = new Vector3 (detectedObject.X, detectedObject.Y, -detectedObject.Z);
+			GameObject DO = Instantiate (ScannedObjectBoundsPrefab, pos, Quaternion.identity);
+			DO.transform.localScale = new Vector3 (detectedObject.Height / 2, detectedObject.Height, detectedObject.Height / 2);
 		}
 	}
-
-	public void StatusChangedCallback (MapStatus mapStatus)
-	{
-		Debug.Log ("status updated: " + mapStatus);
-	}
-
-	public void AssetStoredCallback (bool stored){}
-
-	public void AssetLoadedCallback (MapAsset mapAsset){}
-
+		
 	public void Toast (String message, float time)
 	{
 		NotificationText.text = message;
@@ -166,6 +117,6 @@ public class GameManager : MonoBehaviour
     //TODO: remove
     public void TestTap()
     {
-        LocalPlayerReference.GetComponent<TransformControl>().TestTap();
+        LocalPlayerReference.GetComponent<Jido_Transform_Control>().TestTap();
     }
 }

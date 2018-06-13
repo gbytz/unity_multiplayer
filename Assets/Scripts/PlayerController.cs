@@ -16,21 +16,16 @@ public class PlayerController : NetworkBehaviour {
     public const int MaxHealth = 100;
     public int CurrentHealth = MaxHealth;
 
-	//Ship used for Local player
-	public GameObject LocalPlayerObject;
-    public GameObject ShipVisualsParent;
-    public GameObject ShieldVisuals;
+	//Model used for this Player
+	public GameObject PlayerModel;
+	public ModelController ModelController;
 
     [Header("Projectile Info")]
     public GameObject ProjectilePrefab;
-    public Transform ProjectileSpawnPoint;
     private float _maxSpeed = 6;
 
-	//Origin of this player's refrence frame
-    public GameObject thisOrigin;
-
 	//Flag set in SetGameStarted method and accessed by SceneControl
-	public bool GameStarted;
+	public bool gameStarted;
 
 	//Variables to track how long user has been touching for a shoot
 	private float maxCount = 30f;
@@ -43,10 +38,15 @@ public class PlayerController : NetworkBehaviour {
         _cameraTransform = Camera.main.transform;
         _gameManager = FindObjectOfType<GameManager>();
 
+		Health = MaxHealth;
+
+		//Set the name of this player game object using netId
+		playerID = GetComponent<NetworkIdentity>().netId.ToString();
+		name = playerID;
+
         if (!isLocalPlayer)
         {
             _gameManager.AddNonLocalPlayer(gameObject);
-            ShipVisualsParent.SetActive(true);
         }
         else
         {
@@ -55,33 +55,23 @@ public class PlayerController : NetworkBehaviour {
             transform.localPosition = Vector3.zero;
             transform.rotation = Quaternion.Euler(Vector3.zero);
 
-            Health = MaxHealth;
-
-            //Set the name of this player game object using netId
-            playerID = GetComponent<NetworkIdentity>().netId.ToString();
-            name = playerID;
-
             _localHealthBar = _gameManager.LocalPlayerHealthBar;
 
-            _gameManager.ShieldButton.onClick.AddListener(ActivateShield);
+			_gameManager.ShieldButton.onClick.AddListener(ShieldButtonPressed);
             _gameManager.AddLocalPlayer(gameObject);
-            ShipVisualsParent.SetActive(false);
         }
 
     }
 
     void Update () {
 
-		//Only shoot if local player
+		//Only detect shoot if local player
 		if (!isLocalPlayer) {
-            //Taken from other phone set up
-            //transform.position = transform.position + transform.rotation * phoneGO.transform.position;
-            //transform.rotation = transform.rotation * phoneGO.transform.rotation;
 			return;
 		}
 
 		//Charges shot on touch holding, shoots on touch up
-		if (Input.touchCount > 0)  
+		if (Input.touchCount > 0 && gameStarted)  
 		{
 			if ((Input.GetTouch (0).phase == TouchPhase.Stationary) || (Input.GetTouch (0).phase == TouchPhase.Moved)) {
 				if (count < maxCount) {
@@ -94,59 +84,40 @@ public class PlayerController : NetworkBehaviour {
 				count = 1;
 			}
         }
-	}
 
-	//For local player. Set by TransformControl
+		//TODO: Remove this. Just for Testing in editor.
+		if(Input.GetKeyDown(KeyCode.Space)){
+			float speedFraction = 0.5f;
+			Fire (speedFraction);
+			CmdFire (speedFraction);
+			count = 1;
+		}
+	}
+		
 	public void SetGameStarted(){
-		if (!GameStarted) {
-			GameStarted = true;
+		if (!gameStarted) {
+			gameStarted = true;
             FindObjectOfType<GameManager>().StartGame();
 		}
 	}
 
-	//For remote player. Set by OtherPhoneSetup
-	public void SetGameStarted(GameObject origin){
-		if (!GameStarted) {
-			thisOrigin = origin;
-   			GameStarted = true;
-            FindObjectOfType<GameManager>().StartGame ();
+	public void SetGameStarted(GameObject playerModel){
+		if (!gameStarted) {
+			PlayerModel = playerModel;
+			ModelController = PlayerModel.GetComponent<ModelController> ();
+			gameStarted = true;
+			FindObjectOfType<GameManager>().StartGame();
 		}
 	}
 
-    private void ActivateShield (){
-        if (isLocalPlayer)
-        {
-            ShieldVisuals.SetActive(true);
-            CmdActivateShield();
-        }
-    }
-
-    private void DeactivateShield (){
-
-        ShieldVisuals.SetActive(false);
-
-    }
-
-    void OnTriggerEnter(Collider collider)
-    {
-        if (!isLocalPlayer)
-        {
-            return;
-        }
-
-        CmdHit();
-    }
-
+	//This fire works on local and remote players
     private void Fire(float speedFraction)
     {
-        if (!isLocalPlayer)
-            return;
-
         // Create the Bullet from the Bullet Prefab
         var laser = (GameObject)Instantiate(
             ProjectilePrefab,
-            ProjectileSpawnPoint.position,
-            ProjectileSpawnPoint.rotation);
+			ModelController.ProjectileSpawnPoint.position,
+			ModelController.ProjectileSpawnPoint.rotation);
 
         // Add velocity to the bullet scaled by how long user touched down
         laser.GetComponent<Rigidbody>().velocity = laser.transform.forward * _maxSpeed * speedFraction;
@@ -169,25 +140,34 @@ public class PlayerController : NetworkBehaviour {
 			print ("Local RPC");
 			return;
 		}
-
-        print("Remote Fire Before Game Started");
-
-		if (!GameStarted) {
+			
+		if (!gameStarted) {
 			return;
 		}
          
-        print("Remote Fire After Game Started");
-
         //Pass Fire to the remote player's local avatar
         Fire(speedFraction);
 	}
 
+	//Works on local player only. Checks if was hit by projectile.
+	void OnTriggerEnter(Collider collider)
+	{
+		if (!isLocalPlayer)
+		{
+			return;
+		}
+
+		CmdHit();
+	}
+
+	//Register a hit with Host
     [Command]
     void CmdHit()
     {
         RpcChangeHealth();
     }
 
+	//Send hit to clients
     [ClientRpc]
     void RpcChangeHealth()
     {
@@ -201,18 +181,34 @@ public class PlayerController : NetworkBehaviour {
         _localHealthBar.fillAmount = MaxHealth / 100;
     }
 
+	private void ShieldButtonPressed(){
+		ActivateShield ();
+		CmdActivateShield();
+	}
+
+	//This functions on Local and Remote Players
+	private void ActivateShield (){
+		ModelController.ShieldVisuals.SetActive(true);
+		Invoke ("DeactivateShield", 3.0f);
+	}
+
+	private void DeactivateShield (){
+		ModelController.ShieldVisuals.SetActive(false);
+	}
+
+	//Register shield with host
     [Command]
     void CmdActivateShield()
     {
         RpcActivateShield();
-
     }
-    //Send Fire to Client players
+
+    //Send shield to Client players
     [ClientRpc]
     void RpcActivateShield()
     {
         //For some reason this sometimes get called on the local player
-        ActivateShield();
+		ModelController.ShieldVisuals.SetActive(true);
     }
 
     [Command]
@@ -228,9 +224,7 @@ public class PlayerController : NetworkBehaviour {
         {
             return;
         }
-
-        //FindObjectOfType<LocalPlayerController>().ActivateShield();
-
+			
         //Instantiate(defensePrefab, transformControl.GetLocalPosition(position), Quaternion.identity);
     }
 }
