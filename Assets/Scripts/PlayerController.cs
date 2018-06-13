@@ -50,11 +50,6 @@ public class PlayerController : NetworkBehaviour {
         }
         else
         {
-            //Attach to camera and zero out the rotation in case it's changed
-            transform.SetParent(Camera.main.transform, false);
-            transform.localPosition = Vector3.zero;
-            transform.rotation = Quaternion.Euler(Vector3.zero);
-
             _localHealthBar = _gameManager.LocalPlayerHealthBar;
 
 			_gameManager.ShieldButton.onClick.AddListener(ShieldButtonPressed);
@@ -208,7 +203,7 @@ public class PlayerController : NetworkBehaviour {
     void RpcActivateShield()
     {
         //For some reason this sometimes get called on the local player
-		ModelController.ShieldVisuals.SetActive(true);
+		ActivateShield();
     }
 
     [Command]

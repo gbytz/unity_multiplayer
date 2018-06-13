@@ -139,7 +139,6 @@ public class Jido_Transform_Control : NetworkBehaviour
 	public void RpcRemoteTap (string otherID, Vector3 tapRemote, Vector3 tapLocal)
 	{
 		GameObject otherPlayer = GameObject.Find (otherID);
-		print ("looking for: " + otherID);
 		Jido_Transform_Control otherTC = otherPlayer.GetComponent<Jido_Transform_Control> ();
 		if (!otherTC.isLocalPlayer) {
 			return;

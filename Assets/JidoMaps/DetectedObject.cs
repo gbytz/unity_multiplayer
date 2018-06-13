@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 [Serializable]
 public class DetectedObjects {
@@ -14,15 +15,36 @@ public class DetectedObject
 	public float Y;
 	public float Z;
 	public float Confidence;
+	public float Width;
 	public float Height;
+	public float Depth;
+	public float Orientation;
+	public int SeenCount;
+	public int Id;
 
-	public DetectedObject (string name, float centerX, float centerY, float centerZ, float confidence, float height)
+	public Vector3 Position {
+		get {
+			return new Vector3 (X, Y, -Z);
+		}
+	}
+
+	public DetectedObject (string name, float centerX, float centerY, float centerZ, float confidence, float width, float height, float depth, float orientation, int seenCount, int id)
 	{
 		this.Name = name;
 		this.X = centerX;
 		this.Y = centerY;
 		this.Z = centerZ;
 		this.Confidence = confidence;
+		this.Width = width;
 		this.Height = height;
+		this.Depth = depth;
+		this.Orientation = orientation;
+		this.SeenCount = seenCount;
+		this.Id = id;
+	}
+
+	public override string ToString ()
+	{
+		return string.Format ("{0}, {1}, {2}, {3}", this.Name, this.X, this.Y, this.Z);
 	}
 }
