@@ -6,6 +6,7 @@ TagManager:
   tags:
   - DeviceID
   - Projectile
+  - IgnoreProjectiles
   layers:
   - Default
   - TransparentFX

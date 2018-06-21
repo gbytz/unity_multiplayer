@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class PlayerController : NetworkBehaviour {
 
@@ -28,8 +29,9 @@ public class PlayerController : NetworkBehaviour {
 	public bool gameStarted;
 
 	//Variables to track how long user has been touching for a shoot
-	private float maxCount = 30f;
-	private int count = 1;
+	private float maxCount = 10;
+    private float count = 1;
+    private float ShootChargeSpeed = 10.5f;
 
     private Transform _cameraTransform;
 
@@ -55,7 +57,6 @@ public class PlayerController : NetworkBehaviour {
 			_gameManager.ShieldButton.onClick.AddListener(ShieldButtonPressed);
             _gameManager.AddLocalPlayer(gameObject);
         }
-
     }
 
     void Update () {
@@ -66,13 +67,22 @@ public class PlayerController : NetworkBehaviour {
 		}
 
 		//Charges shot on touch holding, shoots on touch up
-		if (Input.touchCount > 0 && gameStarted)  
+        if (Input.touchCount > 0 /*&& gameStarted*/)  
 		{
+            if (EventSystem.current.currentSelectedGameObject == _gameManager.ShieldButton.gameObject)
+                return;
+
 			if ((Input.GetTouch (0).phase == TouchPhase.Stationary) || (Input.GetTouch (0).phase == TouchPhase.Moved)) {
-				if (count < maxCount) {
-					count++;
-				}
+                if (count < maxCount)
+                {
+                    count = count + (Time.deltaTime * ShootChargeSpeed);
+                    if (count > 1.5f)
+                    {
+                        _gameManager.ShootChargeRing.fillAmount = (count)/10;
+                    }
+                }
 			} else if (Input.GetTouch (0).phase == TouchPhase.Ended) {
+                _gameManager.ShootChargeRing.fillAmount = 0;
 				float speedFraction = (float)count / maxCount;
                 Fire (speedFraction);
 				CmdFire (speedFraction);
@@ -177,14 +187,13 @@ public class PlayerController : NetworkBehaviour {
     }
 
 	private void ShieldButtonPressed(){
-		ActivateShield ();
+		ToggleShield ();
 		CmdActivateShield();
 	}
 
 	//This functions on Local and Remote Players
-	private void ActivateShield (){
-		ModelController.ShieldVisuals.SetActive(true);
-		Invoke ("DeactivateShield", 3.0f);
+	private void ToggleShield (){
+        ModelController.ShieldVisuals.SetActive(!ModelController.ShieldVisuals.activeSelf);
 	}
 
 	private void DeactivateShield (){
@@ -203,7 +212,10 @@ public class PlayerController : NetworkBehaviour {
     void RpcActivateShield()
     {
         //For some reason this sometimes get called on the local player
-		ActivateShield();
+        if (isLocalPlayer)
+            return;
+        
+		ToggleShield();
     }
 
     [Command]

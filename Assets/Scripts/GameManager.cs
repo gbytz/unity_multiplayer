@@ -19,13 +19,14 @@ public class GameManager : MonoBehaviour
     public Queue<string> lookFor = new Queue<string>();
     public Text LookForText;
     public GameObject LookForTextObject;
+    public Button ShieldButton;
+    public Image LocalPlayerHealthBar;
+    public Image ShootChargeRing;
 
     [Header("PlayerObjects")]
     //Player Stuff
     public GameObject LocalPlayerReference;
     public GameObject InGameUI;
-    public Image LocalPlayerHealthBar;
-    public Button ShieldButton;
 
     [Header("PlayerNetworkInfo")]
     public string LocalPlayerID;

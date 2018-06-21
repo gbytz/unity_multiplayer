@@ -224,4 +224,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 150224fb2b8364b85a6adee32c537755, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TagToIgnore: Projectile
+  TagsToIgnore:
+  - Projectile
+  - IgnoreProjectiles

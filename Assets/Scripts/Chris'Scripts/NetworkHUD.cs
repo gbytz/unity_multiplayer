@@ -44,7 +44,6 @@ public class NetworkHUD : MonoBehaviour {
             print("LostConnection");
             LostConnection();
         }*/
-
     }
 
     void ToggleNetworkLobbyVisuals (bool onOff){
@@ -144,7 +143,6 @@ public class NetworkHUD : MonoBehaviour {
             _networkManager.StartMatchMaker();
         
         _networkManager.matchMaker.CreateMatch(SystemInfo.deviceName, _networkManager.matchSize, true, "", "", "", 0, 0, OnMatchCreateCallBack);
-
     }
 
     void OnMatchCreateCallBack (bool success, string extendedInfo, MatchInfo matchInfo){

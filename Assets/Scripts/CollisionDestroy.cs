@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class CollisionDestroy : MonoBehaviour {
 
-    public string TagToIgnore;
+    public List<string> TagsToIgnore = new List<string>();
 
 	// Use this for initialization
 	void OnTriggerEnter(Collider collider){
-        if(collider.tag != TagToIgnore)
+        if(!TagsToIgnore.Contains(collider.tag))
 		    Destroy (gameObject);
 	}
 }
