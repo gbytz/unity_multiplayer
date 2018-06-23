@@ -45,6 +45,5 @@ public class ShipControl : MonoBehaviour {
     public void TakeDamage()
     {
         //_playerMaterial.SetColor("_EmissionColor", Color.red);
-        Debug.Log("Changed to Red!");
     }
 }

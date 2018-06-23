@@ -159,8 +159,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1958041973448920}
-  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0, y: 1, z: -0, w: -0.0000001872535}
+  m_LocalPosition: {x: -0.010320383, y: -0.0018703346, z: 0}
   m_LocalScale: {x: 3.333333, y: 3.333333, z: 3.333333}
   m_Children:
   - {fileID: 4058229055971644}
@@ -169,7 +169,7 @@ Transform:
   - {fileID: 4993894179667582}
   m_Father: {fileID: 4265835476834120}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180.00002, z: 0}
 --- !u!4 &4058229055971644
 Transform:
   m_ObjectHideFlags: 1
@@ -203,13 +203,13 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1514912713272430}
-  m_LocalRotation: {x: 0.7071068, y: -0.000000017457793, z: -0.000000101751496, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0.055, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4026102850366704}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 90.00001, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4993894179667582
 Transform:
   m_ObjectHideFlags: 1
@@ -217,8 +217,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1022105870652558}
   m_LocalRotation: {x: 0, y: -0.7071066, z: -0, w: -0.70710707}
-  m_LocalPosition: {x: 0.0027002017, y: -0.0027, z: -0.2949}
-  m_LocalScale: {x: 1.1100973, y: 0.2775243, z: 0.49607483}
+  m_LocalPosition: {x: 0.0027002, y: -0.0027, z: -0.2949}
+  m_LocalScale: {x: 1.8660702, y: 0.59427947, z: 0.83390045}
   m_Children: []
   m_Father: {fileID: 4026102850366704}
   m_RootOrder: 3
@@ -437,6 +437,7 @@ MonoBehaviour:
   playerID: 
   _gameManager: {fileID: 0}
   Health: 0
+  _worldSpaceHealthBar: {fileID: 114997310998480346}
   CurrentHealth: 100
   PlayerModel: {fileID: 1958041973448920}
   ModelController: {fileID: 114759706392901018}
@@ -458,6 +459,7 @@ MonoBehaviour:
   ShipVisualsParent: {fileID: 1958041973448920}
   ShieldVisuals: {fileID: 1022105870652558}
   ProjectileSpawnPoint: {fileID: 4058229055971644}
+  WorldSpaceHealthBar: {fileID: 114997310998480346}
 --- !u!114 &114866593320736754
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -604,7 +606,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: 718131027
+  randomSeed: -675215641
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -3950,7 +3952,7 @@ ParticleSystemRenderer:
   m_LengthScale: 2
   m_SortingFudge: 0
   m_NormalDirection: 1
-  m_RenderAlignment: 1
+  m_RenderAlignment: 2
   m_Pivot: {x: 0, y: 0, z: 0}
   m_UseCustomVertexStreams: 0
   m_VertexStreams: 00010304

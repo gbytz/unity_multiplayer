@@ -39,7 +39,8 @@ public class NetworkHUD : MonoBehaviour {
 
     private void Update()
     {
-        /*if(_networkManager.client != null && _networkManager.IsClientConnected() == false && Container.activeSelf == false)
+        /*
+        if(_networkManager.client != null && _networkManager.IsClientConnected() == false && Container.activeSelf == false)
         {
             print("LostConnection");
             LostConnection();

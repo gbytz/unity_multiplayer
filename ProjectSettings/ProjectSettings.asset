@@ -763,9 +763,9 @@ PlayerSettings:
     Unity_Ads: 0
   facebookSdkVersion: 7.9.4
   apiCompatibilityLevel: 2
-  cloudProjectId: 20537b2f-8b29-4212-9d50-ebcd53fc730f
+  cloudProjectId: b39d0c64-ac82-44eb-893c-2176846322a1
   projectName: Jido Multiplayer
-  organizationId: dalooshman
+  organizationId: chris-hatch
   cloudEnabled: 0
   enableNativePlatformBackendsForNewInputSystem: 0
   disableOldInputManagerSupport: 0

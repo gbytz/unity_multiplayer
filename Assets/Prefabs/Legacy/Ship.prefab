@@ -593,11 +593,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1153917151253862}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8dc84562b234e43a18bace6b0c3ea270, type: 3}
+  m_Script: {fileID: 11500000, guid: a6a0a7f2b65a14e31bd299ad472a2c41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  thisPlayer: {fileID: 1024681419524828}
-  localTC: {fileID: 0}
 --- !u!114 &114561251264165890
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -627,9 +625,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ProjectilePrefab: {fileID: 1245924787516912, guid: d4f654062da41468fb959f04cd7063f9,
     type: 2}
-  SpawnPoint: {fileID: 4510196468430384}
-  HealthBar: {fileID: 0}
+  ProjectileSpawnPoint: {fileID: 0}
   Health: 100
+  HealthBar: {fileID: 0}
   PlayerMeshRenderer: {fileID: 23122470227017996}
 --- !u!114 &114936918544446170
 MonoBehaviour:

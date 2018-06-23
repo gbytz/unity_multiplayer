@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
     public Button ShieldButton;
     public Image LocalPlayerHealthBar;
     public Image ShootChargeRing;
+    public GameObject TutorialPage;
 
     [Header("PlayerObjects")]
     //Player Stuff
