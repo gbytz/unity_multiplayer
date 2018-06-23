@@ -14,6 +14,7 @@ public class PlayerController : NetworkBehaviour {
     //[SyncVar(hook = "OnChangeHealth")]
     public int Health;
     private Image _localHealthBar;
+    [SerializeField]private Image _worldSpaceHealthBar;
     public const int MaxHealth = 100;
     public int CurrentHealth = MaxHealth;
 
@@ -49,6 +50,7 @@ public class PlayerController : NetworkBehaviour {
         if (!isLocalPlayer)
         {
             _gameManager.AddNonLocalPlayer(gameObject);
+            ModelController.ShieldVisuals.tag = "Untagged";//This is only on the non local player so it doesn't allow lasers to pass through it
         }
         else
         {
@@ -177,13 +179,14 @@ public class PlayerController : NetworkBehaviour {
     void RpcChangeHealth()
     {
         CurrentHealth -= 10;
+        _localHealthBar.fillAmount = MaxHealth / 100;
+
         if (CurrentHealth <= 0)
         {
-            CurrentHealth = MaxHealth;
-            FindObjectOfType<GameManager>().Toast("Dead!", 4.0f);
+            //CurrentHealth = MaxHealth;
+            FindObjectOfType<GameManager>().Toast("You Died!", 1.0f); 
+            _localHealthBar.fillAmount = 0;
         }
-
-        _localHealthBar.fillAmount = MaxHealth / 100;
     }
 
 	private void ShieldButtonPressed(){
