@@ -5,8 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - DeviceID
-  - Projectile
-  - IgnoreProjectiles
+  - LocalShield
+  - ClientShield
   layers:
   - Default
   - TransparentFX

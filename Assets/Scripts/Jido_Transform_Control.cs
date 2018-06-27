@@ -114,7 +114,7 @@ public class Jido_Transform_Control : NetworkBehaviour
 
 		CmdRemoteTap (otherID, tapLocalFrame, tapRemoteFrame);
 
-		_gameManager.UpdateLookForDisplay ();
+		_gameManager.ShowLookForText ();
 
 	}
 

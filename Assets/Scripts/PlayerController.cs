@@ -9,21 +9,24 @@ using UnityEngine.EventSystems;
 public class PlayerController : NetworkBehaviour {
 
     public string playerID;
-    public GameManager _gameManager;
+    private GameManager _gameManager;
 
     //[SyncVar(hook = "OnChangeHealth")]
     public int Health;
     private Image _localHealthBar;
-    [SerializeField]private Image _worldSpaceHealthBar;
     public const int MaxHealth = 100;
     public int CurrentHealth = MaxHealth;
+
+    public Image WorldSpaceHealthBar;
 
 	//Model used for this Player
 	public GameObject PlayerModel;
 	public ModelController ModelController;
 
     [Header("Projectile Info")]
-    public GameObject ProjectilePrefab;
+    public GameObject LocalProjectilePrefab;
+    public GameObject ClientProjectilePrefab;
+
     private float _maxSpeed = 6;
 
 	//Flag set in SetGameStarted method and accessed by SceneControl
@@ -69,7 +72,7 @@ public class PlayerController : NetworkBehaviour {
 		}
 
 		//Charges shot on touch holding, shoots on touch up
-        if (Input.touchCount > 0 /*&& gameStarted*/)  
+        if (Input.touchCount > 0 && gameStarted)  
 		{
             if (EventSystem.current.currentSelectedGameObject == _gameManager.ShieldButton.gameObject)
                 return;
@@ -109,9 +112,11 @@ public class PlayerController : NetworkBehaviour {
 	}
 
 	public void SetGameStarted(GameObject playerModel){
-		if (!gameStarted) {
+		if (!gameStarted) 
+        {
 			PlayerModel = playerModel;
 			ModelController = PlayerModel.GetComponent<ModelController> ();
+            WorldSpaceHealthBar = ModelController.WorldSpaceHealthBar;
 			gameStarted = true;
 			FindObjectOfType<GameManager>().StartGame();
 		}
@@ -120,12 +125,20 @@ public class PlayerController : NetworkBehaviour {
 	//This fire works on local and remote players
     private void Fire(float speedFraction)
     {
-        // Create the Bullet from the Bullet Prefab
-        var laser = (GameObject)Instantiate(
-            ProjectilePrefab,
-			ModelController.ProjectileSpawnPoint.position,
-			ModelController.ProjectileSpawnPoint.rotation);
-
+        GameObject laser;
+        if(isLocalPlayer){
+            // Create the Bullet from the Bullet Prefab
+            laser = (GameObject)Instantiate(
+                LocalProjectilePrefab,
+                ModelController.ProjectileSpawnPoint.position,
+                ModelController.ProjectileSpawnPoint.rotation);
+        }else{
+            // Create the Bullet from the Bullet Prefab
+            laser = (GameObject)Instantiate(
+                ClientProjectilePrefab,
+                ModelController.ProjectileSpawnPoint.position,
+                ModelController.ProjectileSpawnPoint.rotation); 
+        }
         // Add velocity to the bullet scaled by how long user touched down
         laser.GetComponent<Rigidbody>().velocity = laser.transform.forward * _maxSpeed * speedFraction;
 
@@ -144,7 +157,7 @@ public class PlayerController : NetworkBehaviour {
 	void RpcRemoteFire(float speedFraction){
 		//For some reason this sometimes get called on the local player
 		if (isLocalPlayer) {
-			print ("Local RPC");
+			//print ("Local RPC");
 			return;
 		}
 			
@@ -179,12 +192,17 @@ public class PlayerController : NetworkBehaviour {
     void RpcChangeHealth()
     {
         CurrentHealth -= 10;
-        _localHealthBar.fillAmount = MaxHealth / 100;
 
-        if (CurrentHealth <= 0)
+        if(_localHealthBar)
+            _localHealthBar.fillAmount = CurrentHealth * 0.01f;
+
+        if(WorldSpaceHealthBar)
+            WorldSpaceHealthBar.fillAmount = CurrentHealth * 0.01f;
+
+        if (CurrentHealth <= 0 && isLocalPlayer)
         {
             //CurrentHealth = MaxHealth;
-            FindObjectOfType<GameManager>().Toast("You Died!", 1.0f); 
+            FindObjectOfType<GameManager>().ShowToast("You Died!", 1.0f); 
             _localHealthBar.fillAmount = 0;
         }
     }
