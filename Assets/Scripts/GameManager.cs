@@ -15,10 +15,9 @@ public class GameManager : MonoBehaviour
 
     [Header("UI Objects")]
     //UI Controller Stuff
-    public Text NotificationText;
     public Queue<string> lookFor = new Queue<string>();
-    public Text LookForText;
-    public GameObject LookForTextObject;
+    public Text ToastText;
+    public GameObject ToastTextObject;
     public Button ShieldButton;
     public Image LocalPlayerHealthBar;
     public Image ShootChargeRing;
@@ -50,18 +49,16 @@ public class GameManager : MonoBehaviour
 
 	public void AddNonLocalPlayer(GameObject playerID){
 		lookFor.Enqueue (playerID.name);
-		UpdateLookForDisplay ();
+		ShowLookForText ();
         OtherPlayerID = playerID.name;
 	}
 
-	public void UpdateLookForDisplay ()
+	public void ShowLookForText ()
 	{
 		if (lookFor.Count < 1) {
-            LookForText.text = "";
-            LookForTextObject.SetActive(false);
+            ToggleToast(false);
 		} else {
-            LookForText.text = "Tap Player " + lookFor.Peek () + " When They Light Up!";
-            LookForTextObject.SetActive(true);
+            ShowToast("Tap Player " + lookFor.Peek() + " When They Light Up!", 0);
 		}
 	}
 
@@ -72,8 +69,9 @@ public class GameManager : MonoBehaviour
 	}
 
 	public void AddDetectedObject(DetectedObject detectedObject){
-		if (detectedObject.Name == "person") {
-			
+		
+        if (detectedObject.Name == "person") 
+        {	
 			if (lookFor.Count > 0) {
 				GameObject DetectedObjVisual = Instantiate (ScannedObjectBoundsPrefab, detectedObject.Position, Quaternion.identity);
 				DetectedObjVisual.transform.localScale = new Vector3 (detectedObject.Height / 3, detectedObject.Height, detectedObject.Height / 3);
@@ -90,18 +88,23 @@ public class GameManager : MonoBehaviour
 //		}
 	}
 		
-	public void Toast (String message, float time)
+	public void ShowToast (String message, float time)
 	{
-		NotificationText.text = message;
+        ToastTextObject.SetActive(true);
+        ToastText.text = message;
         ToggleToast(true);
 
 		CancelInvoke ();
-		Invoke ("ToastOff", time);
+        if (time > 0)
+        {
+            Invoke("ToastOff", time);
+        }
 	}
 
 	public void ToggleToast (bool OnOff)
 	{
-        NotificationText.gameObject.SetActive (OnOff);
+        ToastTextObject.SetActive(OnOff);
+        ToastText.gameObject.SetActive (OnOff);
 	}
 
     void ToggleArKitObjects(bool onOff)

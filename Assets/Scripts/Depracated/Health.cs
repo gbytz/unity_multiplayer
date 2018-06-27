@@ -31,7 +31,7 @@ public class Health : NetworkBehaviour {
 		if (currentHealth <= 0)
 		{
 			currentHealth = maxHealth;
-            FindObjectOfType<GameManager>().Toast("Dead!", 4.0f);
+            FindObjectOfType<GameManager>().ShowToast("Dead!", 4.0f);
 		}
 
         healthBar.fillAmount = maxHealth / 100;

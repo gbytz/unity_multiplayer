@@ -72,7 +72,7 @@ GameObject:
   - component: {fileID: 65803165193517684}
   - component: {fileID: 114848747392212506}
   m_Layer: 2
-  m_Name: Projectile
+  m_Name: LocalProjectile
   m_TagString: Projectile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -397,6 +397,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 150224fb2b8364b85a6adee32c537755, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsLocalPlayer: 0
+  IsLocalPlayer: 1
   LocalShieldTag: LocalShield
   ClientShieldTag: ClientShield

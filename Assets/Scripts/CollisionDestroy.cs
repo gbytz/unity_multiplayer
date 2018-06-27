@@ -4,11 +4,20 @@ using UnityEngine;
 
 public class CollisionDestroy : MonoBehaviour {
 
-    public List<string> TagsToIgnore = new List<string>();
+    public bool IsLocalPlayer;
+    public string LocalShieldTag;
+    public string ClientShieldTag;
 
 	// Use this for initialization
 	void OnTriggerEnter(Collider collider){
-        if(!TagsToIgnore.Contains(collider.tag))
-		    Destroy (gameObject);
+
+        if(IsLocalPlayer && collider.tag == ClientShieldTag)
+        {
+            Destroy(gameObject);
+        }
+        else if(!IsLocalPlayer && collider.tag == LocalShieldTag)
+        {
+            Destroy(gameObject);
+        }
 	}
 }
