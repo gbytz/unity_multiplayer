@@ -37,30 +37,14 @@ public class NetworkHUD : MonoBehaviour {
         ConfirmJoinBTN.onClick.AddListener(JoinGame);
 	}
 
-    private void Update()
-    {
-        /*
-        if(_networkManager.client != null && _networkManager.IsClientConnected() == false && Container.activeSelf == false)
-        {
-            print("LostConnection");
-            LostConnection();
-        }*/
-    }
-
     void ToggleNetworkLobbyVisuals (bool onOff){
 
         Container.SetActive(onOff);
     }
 
-    void LostConnection(){
-        ToggleNetworkLobbyVisuals(true);
-        SceneManager.LoadScene(0);//Restart game. Resets all object and GUI's
-    }
-
-    void FindServerHook (){
-
+    void FindServerHook ()
+    {
         StartCoroutine(FindServers());
-
     }
 
     IEnumerator FindServers ()

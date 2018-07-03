@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
     public Image LocalPlayerHealthBar;
     public Image ShootChargeRing;
     public GameObject TutorialPage;
+    public Button QuitGameBTN;
 
     [Header("PlayerObjects")]
     //Player Stuff
@@ -38,9 +39,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private UnityARCameraNearFar _camNearFar = null;
     [SerializeField] private UnityARCameraManager _camManager = null;
 
-    public void LostConnection (){
-        InGameUI.SetActive(false);
-    }
+    private bool _isPaused;
 
 	public void AddLocalPlayer(GameObject localPlayer){
 		this.LocalPlayerReference = localPlayer;
@@ -67,6 +66,18 @@ public class GameManager : MonoBehaviour
         ToggleArKitObjects(true);
 		InGameUI.SetActive (true);
 	}
+
+    public void PauseGameToggle()
+    {
+        _isPaused = !_isPaused;
+
+        if (_isPaused)
+        {
+            Time.timeScale = 0;
+        }else{
+            Time.timeScale = 1;
+        }
+    }
 
 	public void AddDetectedObject(DetectedObject detectedObject){
 		
