@@ -24,17 +24,19 @@ public class CustomNetworkManager : NetworkManager {
 
     public void RestartGame (){
 
+        if (Network.isClient)
+            client.Disconnect();
+
+        if(Network.isServer)
+            StopHost();
+
         SceneManager.LoadScene(0);
+
         return;
 
         /*Not going to use this manual route. Requires manual management of GameManager's "IsStarted" and Player Objects....reloading the scene seem to be enough and work properly
         _gameManager.InGameUI.SetActive(false);
         _networkHUD.Container.SetActive(true);
-
-        if (IsClientConnected())
-            client.Disconnect();
-
-        StopHost();
         */
     }
 
@@ -50,10 +52,14 @@ public class CustomNetworkManager : NetworkManager {
         //LostConnection(); Currently even if someone else disconnects this will trip so I am leaving it out for now
     }
 
-
     public void LostConnection()
     {
-        _gameManager.InGameUI.SetActive(false);
-        _networkHUD.Container.SetActive(true);
+        if (Network.isClient)
+            client.Disconnect();
+
+        if (Network.isServer)
+            StopHost();
+
+        SceneManager.LoadScene(0);
     }
 }
