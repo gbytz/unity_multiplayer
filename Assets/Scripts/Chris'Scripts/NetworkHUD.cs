@@ -26,7 +26,7 @@ public class NetworkHUD : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 
-        _networkManager = FindObjectOfType<NetworkManager>();
+        _networkManager = FindObjectOfType<CustomNetworkManager>();
         if (_networkManager.matchMaker == null)
             _networkManager.StartMatchMaker();
         
