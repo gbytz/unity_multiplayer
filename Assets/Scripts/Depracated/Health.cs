@@ -11,10 +11,11 @@ public class Health : NetworkBehaviour {
     public Image healthBar;
 
 	void Start(){
-		
-		if (!isLocalPlayer) {
-			return;
-		}
+
+        if (!isLocalPlayer)
+        {
+            return;
+        }
 
         healthBar = FindObjectOfType<GameManager>().LocalPlayerHealthBar;
 	}
