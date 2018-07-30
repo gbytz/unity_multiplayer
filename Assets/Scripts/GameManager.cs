@@ -9,13 +9,8 @@ using UnityEngine.Networking;
 
 public class GameManager : MonoBehaviour
 {
-    [Header("Game Level Settings")]
-    public GameObject ScannedObjectBoundsPrefab;
-    public GameObject PlayerModelPrefab;
-
     [Header("UI Objects")]
     //UI Controller Stuff
-    public Queue<string> lookFor = new Queue<string>();
     public Text ToastText;
     public GameObject ToastTextObject;
     public Button ShieldButton;
@@ -23,15 +18,7 @@ public class GameManager : MonoBehaviour
     public Image ShootChargeRing;
     public GameObject TutorialPage;
     public Button QuitGameBTN;
-
-    [Header("PlayerObjects")]
-    //Player Stuff
-    public GameObject LocalPlayerReference;
     public GameObject InGameUI;
-
-    [Header("PlayerNetworkInfo")]
-    public string LocalPlayerID;
-    public string OtherPlayerID;
 
     //ARKit Objects Used to Initialize Manually On Game Start
     [Header("ArKit Objects To Activate")]
@@ -40,26 +27,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] private UnityARCameraManager _camManager = null;
 
     private bool _isPaused;
-
-	public void AddLocalPlayer(GameObject localPlayer){
-		this.LocalPlayerReference = localPlayer;
-        LocalPlayerID = localPlayer.name;
-	}
-
-	public void AddNonLocalPlayer(GameObject playerID){
-		lookFor.Enqueue (playerID.name);
-		ShowLookForText ();
-        OtherPlayerID = playerID.name;
-	}
-
-	public void ShowLookForText ()
-	{
-		if (lookFor.Count < 1) {
-            ToggleToast(false);
-		} else {
-            ShowToast("Tap Player " + lookFor.Peek() + " When They Light Up!", 0);
-		}
-	}
 
 	public void StartGame()
     {
@@ -78,26 +45,6 @@ public class GameManager : MonoBehaviour
             Time.timeScale = 1;
         }
     }
-
-	public void AddDetectedObject(DetectedObject detectedObject){
-		
-        if (detectedObject.Name == "person") 
-        {	
-			if (lookFor.Count > 0) {
-				GameObject DetectedObjVisual = Instantiate (ScannedObjectBoundsPrefab, detectedObject.Position, Quaternion.identity);
-				DetectedObjVisual.transform.localScale = new Vector3 (detectedObject.Height / 3, detectedObject.Height, detectedObject.Height / 3);
-				DetectedObjVisual.GetComponent<DetectedObjectControl> ().isVisible = true;
-			} else {
-				GameObject DetectedObjVisual = Instantiate (ScannedObjectBoundsPrefab, detectedObject.Position, Quaternion.identity);
-				DetectedObjVisual.transform.localScale = new Vector3 (detectedObject.Height / 3, detectedObject.Height, detectedObject.Height / 3);
-				DetectedObjVisual.GetComponent<DetectedObjectControl> ().isVisible = false;
-			}
-		}
-//		} else if (lookFor.Count < 1 && detectedObject.Name == "chair"){
-//			GameObject DO = Instantiate (ScannedObjectBoundsPrefab, detectedObject.Position, Quaternion.identity);
-//			DO.transform.localScale = new Vector3 (detectedObject.Height / 2, detectedObject.Height, detectedObject.Height / 2);
-//		}
-	}
 		
 	public void ShowToast (String message, float time)
 	{
@@ -126,11 +73,5 @@ public class GameManager : MonoBehaviour
             _camNearFar.enabled = onOff;
             _camManager.enabled = onOff;
         }
-    }
-
-    //TODO: remove
-    public void TestTap()
-    {
-        LocalPlayerReference.GetComponent<Jido_Transform_Control>().TestTap();
     }
 }

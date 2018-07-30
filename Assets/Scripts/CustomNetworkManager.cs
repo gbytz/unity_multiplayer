@@ -87,7 +87,7 @@ public class CustomNetworkManager : NetworkManager {
     {
         base.OnServerDisconnect(conn);
         print("Lobby Server Disconnected");
-        //QuitGame();
+        QuitGame();
     }
 
     public override void OnClientDisconnect(NetworkConnection conn)
