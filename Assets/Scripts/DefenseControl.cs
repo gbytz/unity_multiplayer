@@ -5,14 +5,14 @@ using UnityEngine.Networking;
 
 public class DefenseControl : NetworkBehaviour {
 
-	private PlayerController playerControl;
-	private Jido_Transform_Control transformControl;
+	private PlayerController playerController;
+	private Jido_Player transformControl;
 	public GameObject defensePrefab;
 
 	// Use this for initialization
 	void Start () {
-		playerControl = GetComponent<PlayerController> ();
-		transformControl = GetComponent<Jido_Transform_Control> ();
+		playerController = GetComponent<PlayerController> ();
+		transformControl = GetComponent<Jido_Player> ();
 	}
 
 	void Update ()
@@ -21,7 +21,7 @@ public class DefenseControl : NetworkBehaviour {
 			return;
 		}
 
-		if (Input.touchCount > 0 && playerControl.gameStarted ) {
+		if (Input.touchCount > 0 && playerController.gameStarted ) {
 
 			if (Input.GetTouch (0).phase == TouchPhase.Began) {
 				Ray ray = Camera.main.ScreenPointToRay (Input.GetTouch (0).position);

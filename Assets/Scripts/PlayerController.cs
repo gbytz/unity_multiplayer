@@ -8,8 +8,10 @@ using UnityEngine.EventSystems;
 
 public class PlayerController : NetworkBehaviour {
 
+	[HideInInspector]
     public string playerID;
     private GameManager _gameManager;
+	private Jido_Manager _jidoManager;
 
     //[SyncVar(hook = "OnChangeHealth")]
     public int Health;
@@ -17,6 +19,7 @@ public class PlayerController : NetworkBehaviour {
     public const int MaxHealth = 100;
     public int CurrentHealth = MaxHealth;
 
+	[HideInInspector]
     public Image WorldSpaceHealthBar;
 
 	//Model used for this Player
@@ -29,7 +32,7 @@ public class PlayerController : NetworkBehaviour {
 
     private float _maxSpeed = 6;
 
-	//Flag set in SetGameStarted method and accessed by SceneControl
+	[HideInInspector]
 	public bool gameStarted;
 
 	//Variables to track how long user has been touching for a shoot
@@ -43,6 +46,7 @@ public class PlayerController : NetworkBehaviour {
     {
         _cameraTransform = Camera.main.transform;
         _gameManager = FindObjectOfType<GameManager>();
+		_jidoManager = FindObjectOfType<Jido_Manager> ();
 
 		Health = MaxHealth;
 
@@ -52,7 +56,7 @@ public class PlayerController : NetworkBehaviour {
 
         if (!isLocalPlayer)
         {
-            _gameManager.AddNonLocalPlayer(gameObject);
+			_jidoManager.AddNonLocalPlayer(gameObject);
             ModelController.ShieldVisuals.tag = "Untagged";//This is only on the non local player so it doesn't allow lasers to pass through it
         }
         else
@@ -60,7 +64,7 @@ public class PlayerController : NetworkBehaviour {
             _localHealthBar = _gameManager.LocalPlayerHealthBar;
 
 			_gameManager.ShieldButton.onClick.AddListener(ShieldButtonPressed);
-            _gameManager.AddLocalPlayer(gameObject);
+			_jidoManager.AddLocalPlayer(gameObject);
         }
     }
 
