@@ -7,16 +7,16 @@ using System.Runtime.InteropServices;
 namespace UnityEngine.XR.iOS {
 	public class UnityMapsyncLibNativeInterface {
 		[DllImport("__Internal")]
-		private static extern IntPtr _CreateMapsyncSession(IntPtr arSession, string mapId, string userId, string developerKey, bool isMappingMode);
+		private static extern IntPtr _CreateMapsyncSession(IntPtr arSession, string mapId, string userId, string developerKey, float screenHeight, float screenWidth, bool isMappingMode);
 
 		[DllImport("__Internal")]
 		private static extern void _SaveAssets(string assetJson);
 
 		[DllImport("__Internal")]
-		private static extern void _RegisterUnityCallbacks(string callbackGameObject, string assetReloadedCallback, string statusUpdatedCallback, string storePlacementCallback);
+		private static extern void _RegisterUnityCallbacks(string callbackGameObject, string assetReloadedCallback, string statusUpdatedCallback, string storePlacementCallback, string progressCallback, string objectDetectedCallback);
 
-		[DllImport("__Internal")]
-		private static extern void _RegisterObjectDetectionCallback(string objectDetectionCallback, float screenHeight, float screenWidth);
+        [DllImport("__Internal")]
+        private static extern void _Dispose();
 
 		/// <summary>
 		/// This should only be called once from MapsyncLb.cs
@@ -30,15 +30,20 @@ namespace UnityEngine.XR.iOS {
 				return;
 			}
 
-			_CreateMapsyncSession(arSession, mapId, userId, developerKey, isMappingMode);
+			_CreateMapsyncSession(arSession, mapId, userId, developerKey, (float)Screen.height, (float)Screen.width, isMappingMode);
 
 			string unityCallbackGameObject = "MapSession";
 			string unityAssetLoadedCallbackFunction = "AssetReloaded";
 			string unityStatusUpdatedCallback = "StatusUpdated";
 			string unityStorePlacementCallback = "PlacementStored";
-			_RegisterUnityCallbacks (unityCallbackGameObject, unityAssetLoadedCallbackFunction, unityStatusUpdatedCallback, unityStorePlacementCallback);
-			RegisterObjectDetectionCallback ();
+            string unityProgressCallback = "ProgressIncremented";
+            string unityObjectDetectedCallback = "ObjectDetected";
+            _RegisterUnityCallbacks (unityCallbackGameObject, unityAssetLoadedCallbackFunction, unityStatusUpdatedCallback, unityStorePlacementCallback, unityProgressCallback, unityObjectDetectedCallback);
 		}
+
+        public void Dispose() {
+            _Dispose();
+        }
 
 		public void SaveAssets(List<MapAsset> assets) {
 			MapAssets mapAssets = new MapAssets () {
@@ -49,10 +54,6 @@ namespace UnityEngine.XR.iOS {
 
 			Debug.Log ("Asset json: " + assetJson);
 			_SaveAssets(assetJson);
-		}
-
-		public void RegisterObjectDetectionCallback() {
-			_RegisterObjectDetectionCallback ("ObjectDetected", (float)Screen.height, (float)Screen.width);
 		}
 	}
 }

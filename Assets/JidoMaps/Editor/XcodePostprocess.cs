@@ -35,7 +35,7 @@ public class XcodePostprocess
 		get {
 			return new [] {
 				Path.Combine (PodFolderPath, "Podfile"),
-				Path.Combine (PodFolderPath, "MapsyncLib.podspec"),
+				Path.Combine (PodFolderPath, "JidoMaps.podspec"),
 				Path.Combine (PodFolderPath, "pods.command"),
 				Path.Combine (PodFolderPath, OpenPodsFileName)
 			};
@@ -45,8 +45,8 @@ public class XcodePostprocess
 	static string[] AppControllerFilePaths {
 		get {
 			return new [] {
-				Path.Combine (XCodeFilesFolderPath, "MapsyncWrapper.h"),
-				Path.Combine (XCodeFilesFolderPath, "MapsyncWrapper.m")
+                Path.Combine (XCodeFilesFolderPath, "JidoSessionWrapper.h"),
+                Path.Combine (XCodeFilesFolderPath, "JidoSessionWrapper.m")
 			};
 		}
 	}

@@ -1,7 +1,5 @@
 fileFormatVersion: 2
-guid: db5a5f31e38924ddbb6477f59b5c256b
-timeCreated: 1519917418
-licenseType: Free
+guid: 9ecd21425b31a46ef9abc90a0516e9a1
 PluginImporter:
   externalObjects: {}
   serializedVersion: 2
@@ -23,11 +21,6 @@ PluginImporter:
         DefaultValueInitialized: true
   - first:
       iPhone: iOS
-    second:
-      enabled: 1
-      settings: {}
-  - first:
-      tvOS: tvOS
     second:
       enabled: 1
       settings: {}
