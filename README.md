@@ -32,16 +32,29 @@ This sample app uses Unity Networking. (Note: If you are not familiar with Unity
 
 Unity Networking spawns a Player Prefab for each player in the network. Each of these Player Prefabs has a `Networked Transform` that will stay updated with the Players latest transform **in their own reference frame**. Since in AR, each player has their own reference frame, we cannot simply show this Networked Transform. Instead, we have a local `Player Model` that displays the remote player's transform **after it has been converted by Jido to the local reference frame**. The `Player Prefab` of remote players is therefore hidden and simply used as a pass-through to the local `Player Model` that is actually the one you interact with.
 
-### Special Scripts and Game Objects
-In order for Jido to keep the AR content synchronized, there are a few scripts and objects that must stay in place.
-- Player Prefabs must have `Jido_Transform_Control.cs` and `FollowCamera.cs` attached
-- Player Models must have the child Game object `Jido_Update` with a box collider scaled to (2,2,2) in **world coordinates** and the `Jido_Update_Transform.cs` script attached.
-- When remote player's joint the game, they must add their Name to the`lookFor` Queue in the `Game Manager`. This let's the local player know that they need to sync up with that player.
-- When Jido detects `person` objects in the scene, they must instantiate an `ObjectBoundsPrefab` at the detected position and scale. In this sample app that occurs in the `GameManager`.
+## Components
+### JidoMultiplayer
+The Unity Scene for this game is called JidoMultiplayer.
 
-### Useful Methods
-- The `Jido_Transform_Control.cs` on each Player Prefab has a method called `GetLocalPosition`. This can be used by remote Player Prefab's to convert vectors from their own reference frame to the local one. 
-	- One example use case of this would be if one player places a Game Object in the room, their remote versions can use this method to make the Game Object appear in the same physical location on all other devices.
+### MapSession
+MapSession, nested under the JidoMapsComponent of the JidoMultiplayer has a public Developer Key property. Setting this property with a valid developer key is necessary authenticating with our API and running the app.
 
-## Notes
-- 
+### GameManager
+The Game Manager Game Object, linked to the GameManager.cs script, encapsulates the high-level state logic for the app. This component configures the app's main UI components and managing the current state of the app. This Game Manager script also controls the ARKit video and camera components that are activated and deactivated depending on whether or not the game is in play or paused. 
+
+### Jido_Manager
+The Game Manager Game Object is also linked to the Jido_Manager script which controls the logic for tracking and synchronizing the position of virtual objects and the two players. 
+
+Jido_Manager has public variables for setting two prefabs: Scanned Object Bounds Prefab and Player Model Prefab. 
+
+### ScannedObjectBounds
+The Scanned Object Bounds Prefab is the rectangle prefab used for visualizing the position of the other player during the pre-game calibration step.
+
+### PlayerModel
+The PlayerModel Prefab defines a player’s avatar for the game. In this app, this Player Model Prefab is set to the spaceship prefab. 
+
+The Player Model Prefab has a ModelController script component with public properties for a Shield prefab, Projectile Spawn Point (transform) and a World Space Health Bar. The projectile spawn point determines an offset, relative to a spaceship avatar, from which shot projectiles are spawned. This offset is helpful for making sure that a player's projectile doesn't collide with their own spaceship or shield. Among the Player Model's sub-components is a Jido_Model component with a Jido_Model script. The Jido_Model script is responsible for tracking the Player Model prefab and keeping the player-to-player transform accurate throughout the game. 
+
+### Player Prefab
+In addition to the Player Model Prefab which encapsulates visual characteristics and is necessary for visualizing each opposing player, a Player Prefab handles tracking, scoring and shooting logic for each player.
+
