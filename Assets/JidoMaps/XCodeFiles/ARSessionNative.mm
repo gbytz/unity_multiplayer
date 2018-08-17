@@ -1412,6 +1412,36 @@ extern "C" void _RegisterUnityCallbacks(char* callbackGameObject, char* assetLoa
     [JidoSessionWrapper setObjectDetectedCallbackFunction:[NSString stringWithUTF8String:objectDetectedCallback]];
 }
 
+char* cStringCopy(const char* string)
+{
+    if (string == NULL)
+        return NULL;
+    
+    char* res = (char*)malloc(strlen(string) + 1);
+    strcpy(res, string);
+    
+    return res;
+}
+
+extern "C" char* _MultiplayerSync(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3, float x4, float y4, float z4, char* quaternion) {
+    NSArray *parts = [[NSString stringWithUTF8String:quaternion] componentsSeparatedByString:@","];
+    float qx = 0, qy = 0, qz = 0, qw = 0;
+    
+    BOOL isQuaternionInitialized = false;
+    
+    if (![[NSString stringWithUTF8String: quaternion] isEqual: @""]) {
+        qx = [parts[0] floatValue];
+        qy = [parts[1] floatValue];
+        qz = [parts[2] floatValue];
+        qw = [parts[3] floatValue];
+        isQuaternionInitialized = true;
+    }
+    
+    const char* result = [[JidoSessionWrapper sharedInstance] multiplayerSync:x1 y1:y1 z1:z1 x2:x2 y2:y2 z2:z2 x3:x3 y3:y3 z3:z3 x4:x4 y4:y4 z4:z4 qx:qx qy:qy qz:qz qw:qw isQuaternionInitialized:isQuaternionInitialized];
+    
+    return cStringCopy(result);
+}
+
 extern "C" void _Dispose() {
     [[JidoSessionWrapper sharedInstance] dispose];
 }
