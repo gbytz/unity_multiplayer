@@ -7,11 +7,10 @@ Pod::Spec.new do |s|
   beta test pod.  
                    DESC
 
-  s.homepage     = "http://mapsync.io"
-  s.license      = "MIT"
-  s.author       = { "Jaeyong Sung" => "jae@mapsync.io" }
+  s.homepage     = "http://jidomaps.com"
+  s.author       = { "Jaeyong Sung" => "jae@jidomaps.com" }
   s.platform     = :ios, "11.0"
-  s.source       = { :git => 'https://github.com/jidomaps/jido_pods.git', :branch => 'amichai_multiplayersync' }
+  s.source       = { :git => 'https://github.com/jidomaps/jido_pods.git', :tag => 'v0.2.8' }
   s.ios.deployment_target = '11.0'
   s.ios.vendored_frameworks = 'JidoMaps.framework'
   s.exclude_files = "Classes/Exclude"
