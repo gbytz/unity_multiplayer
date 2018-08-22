@@ -130,7 +130,6 @@ static NSString* objectDetectedCallback = @"";
                 [dict setValue:@(detectedObject.height) forKey:@"Height"];
                 [dict setValue:@(detectedObject.depth) forKey:@"Depth"];
                 [dict setValue:@(detectedObject.orientation) forKey:@"Orientation"];
-                [dict setValue:@(detectedObject.seenCount) forKey:@"SeenCount"];
                 [dict setValue:@(detectedObject.id) forKey:@"Id"];
                 [dict setValue:@(detectedObject.confidence) forKey:@"Confidence"];
                 [detectedObjectData addObject:dict];
@@ -182,6 +181,40 @@ static NSString* objectDetectedCallback = @"";
 - (void)dispose {
     [self.jidoSession dispose];
     self.jidoSession = nil;
+}
+
+- (const char*)multiplayerSync:(float) x1 y1:(float)y1 z1:(float)z1 x2:(float)x2 y2:(float)y2 z2:(float)z2 x3:(float)x3 y3:(float)y3 z3:(float)z3 x4:(float)x4 y4:(float)y4 z4:(float)z4
+                            qx:(float)qx qy:(float)qy qz:(float)qz qw:(float)qw isQuaternionInitialized:(BOOL)isQuaternionInitialized
+{
+    vector_float3 getTapLocal = {x1,y1,z1};
+    vector_float3 tapLocal = {x2,y2,z2};
+    vector_float3 getTapRemote = {x3,y3,z3};
+    vector_float3 tapRemote = {x4, y4, z4};
+    Quaternion *q = [[Quaternion alloc] initWithX:qx y:qy z:qz w:qw];
+    if(!isQuaternionInitialized) {
+        q = NULL;
+    }
+    
+    MapTransform* transform = [JidoSession MultiplayerSyncWithGetTapLocal:getTapLocal tapLocal:tapLocal getTapRemote:getTapRemote tapRemote:tapRemote rotationRemoteToLocal: q];
+    
+    float updateError = transform.UpdateError;
+    vector_float3 offset = transform.OffsetLocalToRemote;
+    Quaternion* rotation = transform.RotationRemoteToLocal;
+    
+    NSDictionary* root = [NSMutableDictionary dictionary];
+    [root setValue:@(updateError) forKey:@"UpdateError"];
+    [root setValue:@(offset.x) forKey:@"OffsetLocalToRemoteX"];
+    [root setValue:@(offset.y) forKey:@"OffsetLocalToRemoteY"];
+    [root setValue:@(offset.z) forKey:@"OffsetLocalToRemoteZ"];
+    [root setValue:@(rotation.X) forKey:@"RotationRemoteToLocalX"];
+    [root setValue:@(rotation.Y) forKey:@"RotationRemoteToLocalY"];
+    [root setValue:@(rotation.Z) forKey:@"RotationRemoteToLocalZ"];
+    [root setValue:@(rotation.W) forKey:@"RotationRemoteToLocalW"];
+    
+    NSError* error;
+    NSData* jsonData = [NSJSONSerialization dataWithJSONObject:root options:NSJSONWritingPrettyPrinted error:&error];
+    NSString* json = [[NSString alloc] initWithData:jsonData encoding:NSASCIIStringEncoding];
+    return [json cStringUsingEncoding:NSASCIIStringEncoding];
 }
 
 @end

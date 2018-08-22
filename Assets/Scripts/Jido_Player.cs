@@ -166,7 +166,7 @@ public class Jido_Player : NetworkBehaviour
 		if (getTap) {
 			InitOrigin ();
 			otherPlayer.GetComponent<PlayerController> ().SetGameStarted ();
-		} 
+		}
 	}
 
 	public void HitTestPlayerFeet(Vector3 origin, PlayerCallouts playerCallout)
@@ -185,41 +185,27 @@ public class Jido_Player : NetworkBehaviour
 		}
 
 		playerCallout.StartTracking();
-
 	}
 
 	private void InitOrigin ()
 	{
-		Vector3 localVector = getTapLocalFrame - tapLocalFrame;
-		Vector3 remoteVector = getTapRemoteFrame - tapRemoteFrame;
-
 		if (!initialized) {
-			float angleRemoteToLocal = Vector3.SignedAngle(remoteVector, localVector, Vector3.up);
-			rotationRemoteToLocal = Quaternion.Euler(0, angleRemoteToLocal, 0);
-			offsetLocalToRemote = getTapLocalFrame - rotationRemoteToLocal * getTapRemoteFrame;
-
 			playerModel = Instantiate (_jidoManager.PlayerModelPrefab);
 			playerModel.name = name;
 			HitTestPlayerFeet(playerModel.transform.position, playerModel.GetComponentInChildren<PlayerCallouts>());
 			GetComponent<PlayerController>().SetGameStarted (playerModel);
+			MapTransform transform = FindObjectOfType<MapSession> ().MultiplayerSync (getTapLocalFrame, tapLocalFrame, getTapRemoteFrame, tapRemoteFrame, null);
+			rotationRemoteToLocal = transform.RotationRemoteToLocal;
+			offsetLocalToRemote = transform.OffsetLocalToRemote;
 			initialized = true;
-
-			Vector3 offsetLocalToRemoteA = getTapLocalFrame - rotationRemoteToLocal * getTapRemoteFrame;
-			Vector3 offsetLocalToRemoteB = tapLocalFrame - rotationRemoteToLocal * tapRemoteFrame;
-
-			offsetLocalToRemote.y = ((offsetLocalToRemoteA + offsetLocalToRemoteB) / 2).y;
 		} else {
-			Vector3 offsetLocalToRemoteA = getTapLocalFrame - rotationRemoteToLocal * getTapRemoteFrame;
-			Vector3 offsetLocalToRemoteB = tapLocalFrame - rotationRemoteToLocal * tapRemoteFrame;
-
-			float updateError = (offsetLocalToRemoteB - offsetLocalToRemoteA).magnitude;
-			if (updateError > (errorThresh * 1.2f)) {
+			MapTransform transform = FindObjectOfType<MapSession> ().MultiplayerSync (getTapLocalFrame, tapLocalFrame, getTapRemoteFrame, tapRemoteFrame, rotationRemoteToLocal);
+			if (transform.UpdateError > (errorThresh * 1.2f)) {
 				return;
 			}
 
 			updateTarget = true;
-			updateOffset = getTapLocalFrame - rotationRemoteToLocal * getTapRemoteFrame;
-			updateOffset.y = ((offsetLocalToRemoteA + offsetLocalToRemoteB) / 2).y;
+			updateOffset = transform.OffsetLocalToRemote;
 		}
 	}
 

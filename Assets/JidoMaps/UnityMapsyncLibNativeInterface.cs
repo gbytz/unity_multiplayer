@@ -15,7 +15,10 @@ namespace UnityEngine.XR.iOS {
 		[DllImport("__Internal")]
 		private static extern void _RegisterUnityCallbacks(string callbackGameObject, string assetReloadedCallback, string statusUpdatedCallback, string storePlacementCallback, string progressCallback, string objectDetectedCallback);
 
-        [DllImport("__Internal")]
+		[DllImport("__Internal")]
+		private static extern string _MultiplayerSync(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3, float x4, float y4, float z4, string quaternion);
+
+		[DllImport("__Internal")]
         private static extern void _Dispose();
 
 		/// <summary>
@@ -44,6 +47,16 @@ namespace UnityEngine.XR.iOS {
         public void Dispose() {
             _Dispose();
         }
+
+		public MapTransform MultiplayerSync(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3, float x4, float y4, float z4, float? qx, float? qy, float? qz, float? qw) {
+			string quaternion = "";
+			if (qx != null) {
+				quaternion = string.Format ("{0},{1},{2},{3}", qx.Value, qy.Value, qz.Value, qw.Value);
+			}
+
+			string json = _MultiplayerSync (x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4, quaternion);
+			return JsonUtility.FromJson<MapTransform>(json);
+		}
 
 		public void SaveAssets(List<MapAsset> assets) {
 			MapAssets mapAssets = new MapAssets () {

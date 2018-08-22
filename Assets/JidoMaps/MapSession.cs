@@ -50,6 +50,18 @@ public class MapSession : MonoBehaviour
 		mapsyncInterface.Dispose ();
 	}
 
+	public MapTransform MultiplayerSync(Vector3 localA, Vector3 localB, Vector3 remoteA, Vector3 remoteB, Quaternion? rotation) {
+		float? qx = null, qy = null, qz = null, qw = null;
+		if (rotation.HasValue) {
+			qx = rotation.Value.x;
+			qy = rotation.Value.y;
+			qz = rotation.Value.z;
+			qw = rotation.Value.w;
+		}
+
+		return mapsyncInterface.MultiplayerSync (localA.x, localA.y, localA.z, localB.x, localB.y, localB.z, remoteA.x, remoteA.y, remoteA.z, remoteB.x, remoteB.y, remoteB.z, qx, qy, qz, qw);
+	}
+
     public void StorePlacements(List<MapAsset> assets)
     {
         mapsyncInterface.SaveAssets(assets);

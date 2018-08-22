@@ -4,12 +4,16 @@ using UnityEngine;
 
 public class Jido_Model : MonoBehaviour {
 
-	private Jido_Player localTC;
+	private Jido_Player thisTransformControl;
+	private Jido_Player localPlayerTransformControl;
+
+	[HideInInspector]
 	public string playerID;
 
 	void Start(){
-		localTC = FindObjectOfType<Jido_Manager> ().LocalPlayerReference.GetComponent<Jido_Player> ();
+		localPlayerTransformControl = FindObjectOfType<Jido_Manager> ().LocalPlayerReference.GetComponent<Jido_Player> ();
 		playerID = transform.parent.name; 
+		thisTransformControl = GameObject.Find(playerID).GetComponent<Jido_Player>();
 		InvokeRepeating("CheckSeen", 1f, 0.3f);
 	}
 
@@ -17,11 +21,11 @@ public class Jido_Model : MonoBehaviour {
 		Vector3 screenPoint = Camera.main.WorldToViewportPoint(transform.position);
 		if (screenPoint.z > 0 && screenPoint.x > 0 && screenPoint.x < 1 && screenPoint.y > 0 && screenPoint.y < 1)
 		{
-			localTC.ModelWasSeen();
+			thisTransformControl.ModelWasSeen();
 		}
 	}
 
 	public void UpdateTransform(Vector3 detectedPosition){
-		localTC.AutoTap (playerID, detectedPosition);
+		localPlayerTransformControl.AutoTap (playerID, detectedPosition);
 	}
 }
