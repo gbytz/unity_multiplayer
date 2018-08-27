@@ -4,7 +4,7 @@
 - This sample app uses the Jido Unity Plugin for ARKit 1.5 and was built using Unity 2017.3.1, XCode Version 9.3, and Unity Networking.
 - Clone this repository and open the root directory in Unity  
 - Open the scene `Jido Multiplayer` and add your Jido API key to the `MapSession` Game Object as seen below
-<img src="https://github.com/jidomaps/unity_multiplayer/blob/ReadmeChanges/Assets/Api_Key.png" width="250" height="250">
+![](https://github.com/jidomaps/unity_multiplayer/blob/ReadmeChanges/Assets/Api_Key.png)
 - Make sure to register the app with your Unity Multiplayer Networking in Services > Multiplayer as seen below
 ![](https://github.com/jidomaps/unity_multiplayer/blob/ReadmeChanges/Assets/RegisterMultiplayer.png)
 ## Building the Sample App
