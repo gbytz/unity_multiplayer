@@ -2,11 +2,14 @@
 ## Getting Started
 - Sign up for a Jido API key at www.jidomaps.com
 - This sample app uses the Jido Unity Plugin for ARKit 1.5 and was built using Unity 2017.3.1, XCode Version 9.3, and Unity Networking.
-- Clone this repository and open the enclosed Unity project. 
-- Open the scene `Jido Multiplayer` and add your Jido API key to the `MapSession` Game Object
-- Make sure to register the app with your Unity Multiplayer Networking in Services > Multiplayer
+- Clone this repository and open the root directory in Unity  
+- Open the scene `Jido Multiplayer` and add your Jido API key to the `MapSession` Game Object as seen below
+![](https://github.com/jidomaps/unity_multiplayer/blob/master/Assets/Api_Key.png)
+- Make sure to register the app with your Unity Multiplayer Networking in Services > Multiplayer as seen below
+![](https://github.com/jidomaps/unity_multiplayer/blob/master/Assets/RegisterMultiplayer.png)
 ## Building the Sample App
-- Build the Unity project  for iOS in File > Build Settings...
+- Navigate to File > Build Settings... 
+- Select platform as iOS and build the project
 - The build will create a folder where your XCode project lives. In Finder, double click on the file called `pods.command`. This will automatically install the Jido pod and open the XCode workspace of your project.
 - Set up your Signing for the app in XCode
 - Attach an iPhone (6S and up) to XCode and build the project.
