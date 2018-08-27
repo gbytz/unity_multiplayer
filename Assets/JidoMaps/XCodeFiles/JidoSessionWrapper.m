@@ -183,8 +183,7 @@ static NSString* objectDetectedCallback = @"";
     self.jidoSession = nil;
 }
 
-- (const char*)multiplayerSync:(float) x1 y1:(float)y1 z1:(float)z1 x2:(float)x2 y2:(float)y2 z2:(float)z2 x3:(float)x3 y3:(float)y3 z3:(float)z3 x4:(float)x4 y4:(float)y4 z4:(float)z4
-                            qx:(float)qx qy:(float)qy qz:(float)qz qw:(float)qw isQuaternionInitialized:(BOOL)isQuaternionInitialized
+- (const char*)multiplayerSync:(float) x1 y1:(float)y1 z1:(float)z1 x2:(float)x2 y2:(float)y2 z2:(float)z2 x3:(float)x3 y3:(float)y3 z3:(float)z3 x4:(float)x4 y4:(float)y4 z4:(float)z4 qx:(float)qx qy:(float)qy qz:(float)qz qw:(float)qw isQuaternionInitialized:(BOOL)isQuaternionInitialized
 {
     vector_float3 getTapLocal = {x1,y1,z1};
     vector_float3 tapLocal = {x2,y2,z2};
@@ -195,21 +194,21 @@ static NSString* objectDetectedCallback = @"";
         q = NULL;
     }
     
-    MapTransform* transform = [JidoSession MultiplayerSyncWithGetTapLocal:getTapLocal tapLocal:tapLocal getTapRemote:getTapRemote tapRemote:tapRemote rotationRemoteToLocal: q];
+    UnityMultiplayerTransform* transform = [JidoSession unityMultiplayerSyncWithLocalA:getTapLocal localB:tapLocal remoteA:getTapRemote remoteB:tapRemote rotationRemote:q];
     
-    float updateError = transform.UpdateError;
-    vector_float3 offset = transform.OffsetLocalToRemote;
-    Quaternion* rotation = transform.RotationRemoteToLocal;
+    float updateError = transform.updateError;
+    vector_float3 offset = transform.offsetLocalToRemote;
+    Quaternion* rotation = transform.rotationRemoteToLocal;
     
     NSDictionary* root = [NSMutableDictionary dictionary];
     [root setValue:@(updateError) forKey:@"UpdateError"];
     [root setValue:@(offset.x) forKey:@"OffsetLocalToRemoteX"];
     [root setValue:@(offset.y) forKey:@"OffsetLocalToRemoteY"];
     [root setValue:@(offset.z) forKey:@"OffsetLocalToRemoteZ"];
-    [root setValue:@(rotation.X) forKey:@"RotationRemoteToLocalX"];
-    [root setValue:@(rotation.Y) forKey:@"RotationRemoteToLocalY"];
-    [root setValue:@(rotation.Z) forKey:@"RotationRemoteToLocalZ"];
-    [root setValue:@(rotation.W) forKey:@"RotationRemoteToLocalW"];
+    [root setValue:@(rotation.x) forKey:@"RotationRemoteToLocalX"];
+    [root setValue:@(rotation.y) forKey:@"RotationRemoteToLocalY"];
+    [root setValue:@(rotation.z) forKey:@"RotationRemoteToLocalZ"];
+    [root setValue:@(rotation.w) forKey:@"RotationRemoteToLocalW"];
     
     NSError* error;
     NSData* jsonData = [NSJSONSerialization dataWithJSONObject:root options:NSJSONWritingPrettyPrinted error:&error];
