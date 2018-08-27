@@ -5,7 +5,6 @@
 - Clone this repository and open the root directory in Unity  
 - Open the scene `Jido Multiplayer` and add your Jido API key to the `MapSession` Game Object as seen below
 <img src="https://github.com/jidomaps/unity_multiplayer/blob/ReadmeChanges/Assets/Api_Key.png" width="250" height="250">
-![](https://github.com/jidomaps/unity_multiplayer/blob/ReadmeChanges/Assets/Api_Key.png){:height="50%" width="50%"}
 - Make sure to register the app with your Unity Multiplayer Networking in Services > Multiplayer as seen below
 ![](https://github.com/jidomaps/unity_multiplayer/blob/ReadmeChanges/Assets/RegisterMultiplayer.png)
 ## Building the Sample App
